@@ -1,0 +1,6 @@
+@QuickBite.Menu_HostAddress = http://localhost:5103
+
+GET {{QuickBite.Menu_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
