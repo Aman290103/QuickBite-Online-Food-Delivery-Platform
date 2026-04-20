@@ -95,19 +95,52 @@ namespace QuickBite.Restaurant.Controllers
             }
         }
 
-        [HttpPut("{id}/rating")] // Called internally by Review Service
-        public async Task<IActionResult> UpdateRating(Guid id, [FromQuery] double rating)
-        {
-            await _restaurantService.UpdateRatingAsync(id, rating);
-            return Ok(new { Message = "Rating updated" });
-        }
-
         [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _restaurantService.DeleteRestaurantAsync(id);
             return Ok(new { Message = "Restaurant deleted" });
+        }
+
+        // --- Review Endpoints ---
+
+        [HttpPost("{id}/reviews")]
+        [Authorize]
+        public async Task<IActionResult> SubmitReview(Guid id, [FromBody] AddReviewDto dto)
+        {
+            try
+            {
+                var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+                var result = await _restaurantService.SubmitReviewAsync(id, customerId, dto);
+                return CreatedAtAction(nameof(GetReviews), new { id = id }, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("{id}/reviews")]
+        public async Task<IActionResult> GetReviews(Guid id, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var result = await _restaurantService.GetReviewsAsync(id, page, pageSize);
+            return Ok(result);
+        }
+
+        [HttpGet("{id}/reviews/avg")]
+        public async Task<IActionResult> GetAverageRating(Guid id)
+        {
+            var result = await _restaurantService.GetAvgRatingAsync(id);
+            return Ok(new { AverageRating = result });
+        }
+
+        [HttpDelete("reviews/{reviewId}")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> DeleteReview(Guid reviewId)
+        {
+            await _restaurantService.DeleteReviewAsync(reviewId);
+            return Ok(new { Message = "Review moderated/deleted" });
         }
     }
 }

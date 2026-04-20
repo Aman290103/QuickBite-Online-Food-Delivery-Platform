@@ -181,10 +181,71 @@ namespace QuickBite.Restaurant.Services
             catch (Exception) { }
         }
 
+        // --- Review Implementation ---
+
+        public async Task<ReviewResponseDto> SubmitReviewAsync(Guid restaurantId, Guid customerId, AddReviewDto dto)
+        {
+            var exists = await _repository.ExistsReviewByOrderIdAsync(dto.OrderId);
+            if (exists) throw new InvalidOperationException("Review already exists for this order.");
+
+            var review = new RestaurantReview
+            {
+                ReviewId = Guid.NewGuid(),
+                RestaurantId = restaurantId,
+                CustomerId = customerId,
+                OrderId = dto.OrderId,
+                FoodRating = dto.FoodRating,
+                Comment = dto.Comment
+            };
+            await _repository.AddReviewAsync(review);
+
+            var restaurant = await _repository.GetByIdAsync(restaurantId);
+            if (restaurant == null) throw new Exception("Restaurant not found.");
+            
+            await _repository.SaveChangesAsync(); 
+            
+            restaurant.AvgRating = await _repository.GetAvgFoodRatingAsync(restaurantId); 
+            await _repository.SaveChangesAsync(); 
+
+            try { await _cache.RemoveAsync($"{CacheKeyPrefix}{restaurantId}"); } catch { }
+
+            return MapToReviewEntityDto(review);
+        }
+
+        public async Task<IEnumerable<ReviewResponseDto>> GetReviewsAsync(Guid restaurantId, int page, int pageSize)
+        {
+            var reviews = await _repository.GetReviewsByRestaurantIdAsync(restaurantId, page, pageSize);
+            return reviews.Select(MapToReviewEntityDto);
+        }
+
+        public async Task<double> GetAvgRatingAsync(Guid restaurantId)
+        {
+            return await _repository.GetAvgFoodRatingAsync(restaurantId);
+        }
+
+        public async Task DeleteReviewAsync(Guid reviewId)
+        {
+            var review = await _repository.GetReviewByIdAsync(reviewId);
+            if (review == null) throw new Exception("Review not found.");
+
+            await _repository.DeleteReviewAsync(review);
+            await _repository.SaveChangesAsync();
+            
+            var restaurant = await _repository.GetByIdAsync(review.RestaurantId);
+            if (restaurant != null)
+            {
+                restaurant.AvgRating = await _repository.GetAvgFoodRatingAsync(review.RestaurantId);
+                await _repository.SaveChangesAsync();
+                try { await _cache.RemoveAsync($"{CacheKeyPrefix}{review.RestaurantId}"); } catch { }
+            }
+        }
+
+        private ReviewResponseDto MapToReviewEntityDto(RestaurantReview r) => new ReviewResponseDto(
+            r.ReviewId, r.RestaurantId, r.OrderId, r.CustomerId, "Customer", r.FoodRating, r.Comment, r.ReviewDate
+        );
+
         private RestaurantResponseDto MapToDto(Entities.Restaurant r) => new RestaurantResponseDto(
-            r.RestaurantId, r.OwnerId, r.Name, r.Description, r.Cuisine, r.Address, r.City,
-            r.Latitude, r.Longitude, r.Phone, r.AvgRating, r.IsOpen, r.IsApproved,
-            r.DeliveryRadiusKm, r.MinOrderAmount, r.EstimatedDeliveryMin, r.CreatedAt
+            r.RestaurantId, r.OwnerId, r.Name, r.Description, r.Cuisine, r.Address, r.City, r.Latitude, r.Longitude, r.Phone, r.AvgRating, r.IsOpen, r.IsApproved, r.DeliveryRadiusKm, r.MinOrderAmount, r.EstimatedDeliveryMin, r.CreatedAt
         );
     }
 }

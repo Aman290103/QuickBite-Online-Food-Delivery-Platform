@@ -14,5 +14,11 @@ namespace QuickBite.Restaurant.Interfaces
         Task ToggleRestaurantStatusAsync(Guid id, Guid ownerId);
         Task UpdateRatingAsync(Guid id, double newRating);
         Task DeleteRestaurantAsync(Guid id);
+
+        // Review Logic
+        Task<ReviewResponseDto> SubmitReviewAsync(Guid restaurantId, Guid customerId, AddReviewDto dto);
+        Task<IEnumerable<ReviewResponseDto>> GetReviewsAsync(Guid restaurantId, int page, int pageSize);
+        Task<double> GetAvgRatingAsync(Guid restaurantId);
+        Task DeleteReviewAsync(Guid reviewId);
     }
 }
