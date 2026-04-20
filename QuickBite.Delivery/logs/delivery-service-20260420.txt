@@ -1,0 +1,59 @@
+2026-04-20 17:09:54.278 +05:30 [INF] Executed DbCommand (183ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [quickbite_delivery];
+2026-04-20 17:09:54.391 +05:30 [INF] Executed DbCommand (86ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [quickbite_delivery] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2026-04-20 17:09:54.415 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-20 17:09:54.462 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2026-04-20 17:09:54.464 +05:30 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-20 17:09:54.474 +05:30 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-20 17:09:54.489 +05:30 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-04-20 17:09:54.499 +05:30 [INF] No migrations were applied. The database is already up to date.
+2026-04-20 17:11:14.467 +05:30 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-20 17:11:14.514 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-20 17:11:14.516 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-20 17:11:14.517 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-20 17:11:14.540 +05:30 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-04-20 17:11:14.550 +05:30 [INF] Applying migration '20260420114108_InitDelivery'.
+2026-04-20 17:11:14.588 +05:30 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [DeliveryAgents] (
+    [AgentId] uniqueidentifier NOT NULL,
+    [UserId] uniqueidentifier NOT NULL,
+    [FullName] nvarchar(max) NOT NULL,
+    [Phone] nvarchar(max) NOT NULL,
+    [VehicleType] int NOT NULL,
+    [VehicleNumber] nvarchar(max) NOT NULL,
+    [CurrentLatitude] float NULL,
+    [CurrentLongitude] float NULL,
+    [IsAvailable] bit NOT NULL,
+    [IsVerified] bit NOT NULL,
+    [AvgRating] decimal(3,2) NOT NULL,
+    [TotalDeliveries] int NOT NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_DeliveryAgents] PRIMARY KEY ([AgentId])
+);
+2026-04-20 17:11:14.592 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_DeliveryAgents_UserId] ON [DeliveryAgents] ([UserId]);
+2026-04-20 17:11:14.600 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260420114108_InitDelivery', N'8.0.4');

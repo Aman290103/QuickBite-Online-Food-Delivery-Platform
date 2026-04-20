@@ -1,0 +1,6 @@
+@QuickBite.Delivery_HostAddress = http://localhost:5122
+
+GET {{QuickBite.Delivery_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
