@@ -1,0 +1,6 @@
+@QuickBite.Payment_HostAddress = http://localhost:5233
+
+GET {{QuickBite.Payment_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
