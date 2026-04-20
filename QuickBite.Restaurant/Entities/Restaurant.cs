@@ -47,5 +47,8 @@ namespace QuickBite.Restaurant.Entities
         public int EstimatedDeliveryMin { get; set; } = 30;
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation
+        public ICollection<RestaurantReview> Reviews { get; set; } = new List<RestaurantReview>();
     }
 }

@@ -12,5 +12,15 @@ namespace QuickBite.Restaurant.Interfaces
         Task AddAsync(Entities.Restaurant restaurant);
         Task UpdateAsync(Entities.Restaurant restaurant);
         Task DeleteAsync(Entities.Restaurant restaurant);
+
+        // Review Methods
+        Task AddReviewAsync(RestaurantReview review);
+        Task<IEnumerable<RestaurantReview>> GetReviewsByRestaurantIdAsync(Guid restaurantId, int page, int pageSize);
+        Task<bool> ExistsReviewByOrderIdAsync(Guid orderId);
+        Task<double> GetAvgFoodRatingAsync(Guid restaurantId);
+        Task<RestaurantReview?> GetReviewByIdAsync(Guid reviewId);
+        Task DeleteReviewAsync(RestaurantReview review);
+
+        Task SaveChangesAsync();
     }
 }

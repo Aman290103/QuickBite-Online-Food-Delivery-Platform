@@ -70,6 +70,55 @@ namespace QuickBite.Restaurant.Repositories
             await _context.SaveChangesAsync();
         }
 
+        // --- Review Methods ---
+
+        public async Task AddReviewAsync(RestaurantReview review)
+        {
+            await _context.Reviews.AddAsync(review);
+        }
+
+        public async Task<IEnumerable<RestaurantReview>> GetReviewsByRestaurantIdAsync(Guid restaurantId, int page, int pageSize)
+        {
+            return await _context.Reviews
+                .Where(r => r.RestaurantId == restaurantId && r.IsVerified)
+                .OrderByDescending(r => r.ReviewDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<bool> ExistsReviewByOrderIdAsync(Guid orderId)
+        {
+            return await _context.Reviews.AnyAsync(r => r.OrderId == orderId);
+        }
+
+        public async Task<double> GetAvgFoodRatingAsync(Guid restaurantId)
+        {
+            var ratings = await _context.Reviews
+                .Where(r => r.RestaurantId == restaurantId && r.IsVerified)
+                .Select(r => r.FoodRating)
+                .ToListAsync();
+
+            if (!ratings.Any()) return 0;
+            return ratings.Average();
+        }
+
+        public async Task<RestaurantReview?> GetReviewByIdAsync(Guid reviewId)
+        {
+            return await _context.Reviews.FindAsync(reviewId);
+        }
+
+        public async Task DeleteReviewAsync(RestaurantReview review)
+        {
+            review.IsVerified = false; 
+            _context.Reviews.Update(review);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
         private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
         {
             const double R = 6371;
