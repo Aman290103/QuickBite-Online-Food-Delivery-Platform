@@ -11,6 +11,7 @@ namespace QuickBite.Menu.Data
 
         public DbSet<MenuCategory> Categories { get; set; }
         public DbSet<MenuItem> Items { get; set; }
+        public DbSet<MenuItemReview> ItemReviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +31,17 @@ namespace QuickBite.Menu.Data
                 // Explicitly set decimal precision for SQL Server
                 entity.Property(m => m.Price).HasPrecision(18, 2);
                 entity.Property(m => m.DiscountedPrice).HasPrecision(18, 2);
+            });
+
+            modelBuilder.Entity<MenuItemReview>(entity =>
+            {
+                entity.ToTable("MenuItemReviews");
+                // Composite unique index: one review per item per order
+                entity.HasIndex(r => new { r.OrderId, r.MenuItemId }).IsUnique();
+                entity.HasIndex(r => r.MenuItemId);
+                entity.HasOne(r => r.MenuItem)
+                      .WithMany()
+                      .HasForeignKey(r => r.MenuItemId);
             });
         }
     }

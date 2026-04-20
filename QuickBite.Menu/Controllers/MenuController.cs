@@ -100,5 +100,38 @@ namespace QuickBite.Menu.Controllers
             await _menuService.DeleteMenuItemAsync(ownerId, id);
             return Ok(new { Message = "Item deleted" });
         }
+
+        // --- Item Review Endpoints ---
+
+        [Authorize]
+        [HttpPost("items/{itemId}/reviews")]
+        public async Task<IActionResult> SubmitReview(Guid itemId, [FromBody] SubmitMenuItemReviewDto dto)
+        {
+            var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var result = await _menuService.SubmitItemReviewAsync(itemId, customerId, dto);
+            return CreatedAtAction(nameof(GetItemReviews), new { itemId = itemId }, result);
+        }
+
+        [HttpGet("items/{itemId}/reviews")]
+        public async Task<IActionResult> GetItemReviews(Guid itemId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var result = await _menuService.GetItemReviewsAsync(itemId, page, pageSize);
+            return Ok(result);
+        }
+
+        [HttpGet("items/{itemId}/reviews/avg")]
+        public async Task<IActionResult> GetAvgRating(Guid itemId)
+        {
+            var result = await _menuService.GetAvgItemRatingAsync(itemId);
+            return Ok(new { AverageRating = result });
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpDelete("items/reviews/{reviewId}")]
+        public async Task<IActionResult> ModerateReview(Guid reviewId)
+        {
+            await _menuService.ModerateItemReviewAsync(reviewId);
+            return Ok(new { Message = "Review moderated/deleted" });
+        }
     }
 }

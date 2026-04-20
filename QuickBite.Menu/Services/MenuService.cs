@@ -161,6 +161,73 @@ namespace QuickBite.Menu.Services
             await InvalidateCache(item.RestaurantId);
         }
 
+        // --- Review Implementation ---
+
+        public async Task<MenuItemReviewResponseDto> SubmitItemReviewAsync(Guid itemId, Guid customerId, SubmitMenuItemReviewDto dto)
+        {
+            // Validate one review per (order + item)
+            var exists = await _repository.ExistsReviewByOrderAndItemAsync(dto.OrderId, itemId);
+            if (exists) throw new Exception("Review already exists for this item in this order.");
+
+            var item = await _repository.GetItemByIdAsync(itemId);
+            if (item == null) throw new Exception("Menu item not found.");
+
+            var review = new MenuItemReview
+            {
+                ReviewId = Guid.NewGuid(),
+                MenuItemId = itemId,
+                RestaurantId = item.RestaurantId,
+                OrderId = dto.OrderId,
+                CustomerId = customerId,
+                ItemRating = dto.ItemRating,
+                Comment = dto.Comment
+            };
+
+            await _repository.AddItemReviewAsync(review);
+
+            // Recompute Rating
+            var newAvg = await _repository.GetAvgItemRatingAsync(itemId);
+            item.Rating = newAvg;
+            await _repository.UpdateMenuItemAsync(item);
+
+            await InvalidateCache(item.RestaurantId);
+
+            return new MenuItemReviewResponseDto(
+                review.ReviewId, review.MenuItemId, review.CustomerId,
+                review.ItemRating, review.Comment, review.ReviewDate
+            );
+        }
+
+        public async Task<IEnumerable<MenuItemReviewResponseDto>> GetItemReviewsAsync(Guid itemId, int page, int pageSize)
+        {
+            var reviews = await _repository.GetReviewsByItemIdAsync(itemId, page, pageSize);
+            return reviews.Select(r => new MenuItemReviewResponseDto(
+                r.ReviewId, r.MenuItemId, r.CustomerId, r.ItemRating, r.Comment, r.ReviewDate
+            ));
+        }
+
+        public async Task<double> GetAvgItemRatingAsync(Guid itemId)
+        {
+            return await _repository.GetAvgItemRatingAsync(itemId);
+        }
+
+        public async Task ModerateItemReviewAsync(Guid reviewId)
+        {
+            var review = await _repository.GetReviewByIdAsync(reviewId);
+            if (review == null) throw new Exception("Review not found.");
+
+            await _repository.DeleteItemReviewAsync(review);
+            
+            // Recompute Rating after soft-delete
+            var item = await _repository.GetItemByIdAsync(review.MenuItemId);
+            if (item != null)
+            {
+                item.Rating = await _repository.GetAvgItemRatingAsync(item.ItemId);
+                await _repository.UpdateMenuItemAsync(item);
+                await InvalidateCache(item.RestaurantId);
+            }
+        }
+
         private async Task InvalidateCache(Guid restaurantId)
         {
             try { await _cache.RemoveAsync($"{CacheKeyPrefix}{restaurantId}"); } catch { }

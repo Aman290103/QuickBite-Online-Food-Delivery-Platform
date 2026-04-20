@@ -16,5 +16,11 @@ namespace QuickBite.Menu.Interfaces
         Task<MenuItemResponseDto> UpdateMenuItemAsync(Guid ownerId, Guid itemId, UpdateMenuItemDto dto);
         Task ToggleItemAvailabilityAsync(Guid ownerId, Guid itemId);
         Task DeleteMenuItemAsync(Guid ownerId, Guid itemId);
+
+        // Review Logic
+        Task<MenuItemReviewResponseDto> SubmitItemReviewAsync(Guid itemId, Guid customerId, SubmitMenuItemReviewDto dto);
+        Task<IEnumerable<MenuItemReviewResponseDto>> GetItemReviewsAsync(Guid itemId, int page, int pageSize);
+        Task<double> GetAvgItemRatingAsync(Guid itemId);
+        Task ModerateItemReviewAsync(Guid reviewId);
     }
 }

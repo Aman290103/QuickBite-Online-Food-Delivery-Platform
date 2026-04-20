@@ -84,5 +84,52 @@ namespace QuickBite.Menu.Repositories
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
         }
+
+        // --- Review Methods ---
+
+        public async Task AddItemReviewAsync(MenuItemReview review)
+        {
+            await _context.ItemReviews.AddAsync(review);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<MenuItemReview>> GetReviewsByItemIdAsync(Guid itemId, int page, int pageSize)
+        {
+            return await _context.ItemReviews
+                .Where(r => r.MenuItemId == itemId && r.IsVerified)
+                .OrderByDescending(r => r.ReviewDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<bool> ExistsReviewByOrderAndItemAsync(Guid orderId, Guid itemId)
+        {
+            return await _context.ItemReviews
+                .AnyAsync(r => r.OrderId == orderId && r.MenuItemId == itemId);
+        }
+
+        public async Task<double> GetAvgItemRatingAsync(Guid itemId)
+        {
+            var ratings = await _context.ItemReviews
+                .Where(r => r.MenuItemId == itemId && r.IsVerified)
+                .Select(r => r.ItemRating)
+                .ToListAsync();
+
+            if (!ratings.Any()) return 0;
+            return ratings.Average();
+        }
+
+        public async Task<MenuItemReview?> GetReviewByIdAsync(Guid reviewId)
+        {
+            return await _context.ItemReviews.FindAsync(reviewId);
+        }
+
+        public async Task DeleteItemReviewAsync(MenuItemReview review)
+        {
+            review.IsVerified = false; // Soft delete
+            _context.ItemReviews.Update(review);
+            await _context.SaveChangesAsync();
+        }
     }
 }

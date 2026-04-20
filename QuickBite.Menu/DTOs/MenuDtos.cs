@@ -59,4 +59,19 @@ namespace QuickBite.Menu.DTOs
         Guid RestaurantId,
         List<MenuCategoryResponseDto> Categories
     );
+
+    public record SubmitMenuItemReviewDto(
+        [Required] Guid OrderId,
+        [Required][Range(1, 5)] int ItemRating,
+        string? Comment
+    );
+
+    public record MenuItemReviewResponseDto(
+        Guid ReviewId,
+        Guid MenuItemId,
+        Guid CustomerId,
+        int ItemRating,
+        string? Comment,
+        DateTime ReviewDate
+    );
 }
