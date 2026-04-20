@@ -1,0 +1,305 @@
+2026-04-20 16:15:42.340 +05:30 [INF] User profile is available. Using 'C:\Users\Lenovo\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-20 16:15:42.478 +05:30 [INF] Now listening on: http://localhost:5233
+2026-04-20 16:15:42.482 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-20 16:15:42.483 +05:30 [INF] Hosting environment: Development
+2026-04-20 16:15:42.483 +05:30 [INF] Content root path: F:\QuickBite\QuickBite.Payment
+2026-04-20 16:15:51.213 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/ - null null
+2026-04-20 16:15:54.177 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/ - 404 0 null 2965.6603ms
+2026-04-20 16:15:54.203 +05:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5233/, Response status code: 404
+2026-04-20 16:15:57.269 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger - null null
+2026-04-20 16:15:57.288 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger - 301 0 null 18.3988ms
+2026-04-20 16:15:57.303 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/index.html - null null
+2026-04-20 16:15:57.424 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/index.html - 200 null text/html;charset=utf-8 120.6505ms
+2026-04-20 16:15:57.523 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui.css - null null
+2026-04-20 16:15:57.523 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui-bundle.js - null null
+2026-04-20 16:15:57.525 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui-standalone-preset.js - null null
+2026-04-20 16:15:57.554 +05:30 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-04-20 16:15:57.554 +05:30 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-04-20 16:15:57.558 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui-standalone-preset.js - 200 230280 text/javascript 32.5288ms
+2026-04-20 16:15:57.559 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui.css - 200 152034 text/css 35.7385ms
+2026-04-20 16:15:57.570 +05:30 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-04-20 16:15:57.572 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui-bundle.js - 200 1456926 text/javascript 48.7608ms
+2026-04-20 16:15:58.252 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/v1/swagger.json - null null
+2026-04-20 16:15:58.274 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/favicon-32x32.png - null null
+2026-04-20 16:15:58.283 +05:30 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-04-20 16:15:58.288 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/favicon-32x32.png - 200 628 image/png 13.5848ms
+2026-04-20 16:15:58.460 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 208.3475ms
+2026-04-20 16:17:52.926 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - application/json 89
+2026-04-20 16:17:52.945 +05:30 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-20 16:17:52.953 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-20 16:17:52.956 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - 401 0 null 30.0234ms
+2026-04-20 16:21:00.330 +05:30 [INF] Application is shutting down...
+2026-04-20 16:21:05.531 +05:30 [INF] User profile is available. Using 'C:\Users\Lenovo\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-20 16:21:05.635 +05:30 [INF] Now listening on: http://localhost:5233
+2026-04-20 16:21:05.639 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-20 16:21:05.641 +05:30 [INF] Hosting environment: Development
+2026-04-20 16:21:05.643 +05:30 [INF] Content root path: F:\QuickBite\QuickBite.Payment
+2026-04-20 16:21:07.842 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/ - null null
+2026-04-20 16:21:07.916 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/ - 404 0 null 74.5383ms
+2026-04-20 16:21:07.929 +05:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5233/, Response status code: 404
+2026-04-20 16:21:15.132 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/index.html - null null
+2026-04-20 16:21:15.276 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/index.html - 200 null text/html;charset=utf-8 144.0457ms
+2026-04-20 16:21:16.041 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/v1/swagger.json - null null
+2026-04-20 16:21:16.242 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 200.1779ms
+2026-04-20 16:21:33.588 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - application/json 89
+2026-04-20 16:21:33.615 +05:30 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-20 16:21:33.630 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-20 16:21:33.635 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - 401 0 null 46.7912ms
+2026-04-20 16:22:52.462 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - application/json 89
+2026-04-20 16:22:52.580 +05:30 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenMalformedException: IDX14100: JWT is not well formed, there are no dots (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EndcodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+ ---> System.ArgumentException: IDX14102: Unable to decode the header '[PII of type 'Microsoft.IdentityModel.Logging.SecurityArtifact' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]' as Base64Url encoded string.
+ ---> System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'IDX10820: Invalid character found in Base64UrlEncoding. Character: '32', Encoding: '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.')
+   at Microsoft.IdentityModel.Tokens.Base64UrlEncoding.Decode(String input, Int32 offset, Int32 length, Byte[] output)
+   at Microsoft.IdentityModel.Tokens.Base64UrlEncoding.Decode[T](String input, Int32 offset, Int32 length, Func`3 action)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.CreateClaimSet(String rawString, Int32 startIndex, Int32 length, Func`3 action)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(String encodedJson)
+   --- End of inner exception stack trace ---
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(String encodedJson)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken..ctor(String jwtEncodedString)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ReadToken(String token, TokenValidationParameters validationParameters)
+   --- End of inner exception stack trace ---
+2026-04-20 16:22:52.629 +05:30 [INF] Bearer was not authenticated. Failure message: IDX14100: JWT is not well formed, there are no dots (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EndcodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+2026-04-20 16:22:52.636 +05:30 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-20 16:22:52.640 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-20 16:22:52.641 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - 401 0 null 179.2718ms
+2026-04-20 16:23:43.280 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - application/json 89
+2026-04-20 16:23:43.291 +05:30 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenMalformedException: IDX14100: JWT is not well formed, there are no dots (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EndcodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+ ---> System.ArgumentException: IDX14102: Unable to decode the header '[PII of type 'Microsoft.IdentityModel.Logging.SecurityArtifact' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]' as Base64Url encoded string.
+ ---> System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'IDX10820: Invalid character found in Base64UrlEncoding. Character: '32', Encoding: '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.')
+   at Microsoft.IdentityModel.Tokens.Base64UrlEncoding.Decode(String input, Int32 offset, Int32 length, Byte[] output)
+   at Microsoft.IdentityModel.Tokens.Base64UrlEncoding.Decode[T](String input, Int32 offset, Int32 length, Func`3 action)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.CreateClaimSet(String rawString, Int32 startIndex, Int32 length, Func`3 action)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(String encodedJson)
+   --- End of inner exception stack trace ---
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(String encodedJson)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken..ctor(String jwtEncodedString)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ReadToken(String token, TokenValidationParameters validationParameters)
+   --- End of inner exception stack trace ---
+2026-04-20 16:23:43.303 +05:30 [INF] Bearer was not authenticated. Failure message: IDX14100: JWT is not well formed, there are no dots (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EndcodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+2026-04-20 16:23:43.307 +05:30 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-20 16:23:43.308 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-20 16:23:43.310 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - 401 0 null 30.5471ms
+2026-04-20 16:24:24.561 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - application/json 89
+2026-04-20 16:24:24.566 +05:30 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenMalformedException: IDX14100: JWT is not well formed, there are no dots (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EndcodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+ ---> System.ArgumentException: IDX14102: Unable to decode the header '[PII of type 'Microsoft.IdentityModel.Logging.SecurityArtifact' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]' as Base64Url encoded string.
+ ---> System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'IDX10820: Invalid character found in Base64UrlEncoding. Character: '32', Encoding: '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.')
+   at Microsoft.IdentityModel.Tokens.Base64UrlEncoding.Decode(String input, Int32 offset, Int32 length, Byte[] output)
+   at Microsoft.IdentityModel.Tokens.Base64UrlEncoding.Decode[T](String input, Int32 offset, Int32 length, Func`3 action)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.CreateClaimSet(String rawString, Int32 startIndex, Int32 length, Func`3 action)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(String encodedJson)
+   --- End of inner exception stack trace ---
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(String encodedJson)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken..ctor(String jwtEncodedString)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ReadToken(String token, TokenValidationParameters validationParameters)
+   --- End of inner exception stack trace ---
+2026-04-20 16:24:24.578 +05:30 [INF] Bearer was not authenticated. Failure message: IDX14100: JWT is not well formed, there are no dots (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EndcodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+2026-04-20 16:24:24.581 +05:30 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-20 16:24:24.583 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-20 16:24:24.584 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - 401 0 null 22.9301ms
+2026-04-20 16:25:19.247 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/index.html - null null
+2026-04-20 16:25:19.259 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/index.html - 200 null text/html;charset=utf-8 12.0079ms
+2026-04-20 16:25:19.324 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui.css - null null
+2026-04-20 16:25:19.326 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui-bundle.js - null null
+2026-04-20 16:25:19.333 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui-standalone-preset.js - null null
+2026-04-20 16:25:19.351 +05:30 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-04-20 16:25:19.351 +05:30 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-04-20 16:25:19.356 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui-standalone-preset.js - 200 230280 text/javascript 22.9455ms
+2026-04-20 16:25:19.357 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui.css - 200 152034 text/css 33.1031ms
+2026-04-20 16:25:19.359 +05:30 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-04-20 16:25:19.372 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/swagger-ui-bundle.js - 200 1456926 text/javascript 46.0828ms
+2026-04-20 16:25:19.687 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/v1/swagger.json - null null
+2026-04-20 16:25:19.697 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 9.5114ms
+2026-04-20 16:25:19.717 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/favicon-32x32.png - null null
+2026-04-20 16:25:19.723 +05:30 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-04-20 16:25:19.726 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/favicon-32x32.png - 200 628 image/png 8.7829ms
+2026-04-20 16:26:01.947 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - application/json 89
+2026-04-20 16:26:01.953 +05:30 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-20 16:26:01.960 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-20 16:26:01.963 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - 401 0 null 16.5671ms
+2026-04-20 16:26:11.186 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - application/json 89
+2026-04-20 16:26:11.202 +05:30 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenMalformedException: IDX14100: JWT is not well formed, there are no dots (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EndcodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+ ---> System.ArgumentException: IDX14102: Unable to decode the header '[PII of type 'Microsoft.IdentityModel.Logging.SecurityArtifact' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]' as Base64Url encoded string.
+ ---> System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'IDX10820: Invalid character found in Base64UrlEncoding. Character: '32', Encoding: '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.')
+   at Microsoft.IdentityModel.Tokens.Base64UrlEncoding.Decode(String input, Int32 offset, Int32 length, Byte[] output)
+   at Microsoft.IdentityModel.Tokens.Base64UrlEncoding.Decode[T](String input, Int32 offset, Int32 length, Func`3 action)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.CreateClaimSet(String rawString, Int32 startIndex, Int32 length, Func`3 action)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(String encodedJson)
+   --- End of inner exception stack trace ---
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(String encodedJson)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken..ctor(String jwtEncodedString)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ReadToken(String token, TokenValidationParameters validationParameters)
+   --- End of inner exception stack trace ---
+2026-04-20 16:26:11.214 +05:30 [INF] Bearer was not authenticated. Failure message: IDX14100: JWT is not well formed, there are no dots (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EndcodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+2026-04-20 16:26:11.217 +05:30 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-20 16:26:11.219 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-20 16:26:11.221 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - 401 0 null 34.6003ms
+2026-04-20 16:27:20.184 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - application/json 89
+2026-04-20 16:27:20.295 +05:30 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenSignatureKeyNotFoundException: IDX10503: Signature validation failed. Token does not have a kid. Keys tried: '[PII of type 'System.Text.StringBuilder' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. Number of keys in TokenValidationParameters: '1'. 
+Number of keys in Configuration: '0'. 
+Exceptions caught:
+ '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.
+token: '[PII of type 'Microsoft.IdentityModel.JsonWebTokens.JsonWebToken' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. See https://aka.ms/IDX10503 for details.
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateSignature(JsonWebToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateSignatureAndIssuerSecurityKey(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-04-20 16:27:20.305 +05:30 [INF] Bearer was not authenticated. Failure message: IDX10503: Signature validation failed. Token does not have a kid. Keys tried: '[PII of type 'System.Text.StringBuilder' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. Number of keys in TokenValidationParameters: '1'. 
+Number of keys in Configuration: '0'. 
+Exceptions caught:
+ '[PII of type 'System.String' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.
+token: '[PII of type 'Microsoft.IdentityModel.JsonWebTokens.JsonWebToken' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. See https://aka.ms/IDX10503 for details.
+2026-04-20 16:27:20.312 +05:30 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-20 16:27:20.314 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-20 16:27:20.317 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - 401 0 null 132.6219ms
+2026-04-20 16:29:42.559 +05:30 [INF] Application is shutting down...
+2026-04-20 16:29:48.423 +05:30 [INF] User profile is available. Using 'C:\Users\Lenovo\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-20 16:29:48.561 +05:30 [INF] Now listening on: http://localhost:5233
+2026-04-20 16:29:48.566 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-20 16:29:48.569 +05:30 [INF] Hosting environment: Development
+2026-04-20 16:29:48.572 +05:30 [INF] Content root path: F:\QuickBite\QuickBite.Payment
+2026-04-20 16:29:51.020 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/ - null null
+2026-04-20 16:29:51.125 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/ - 404 0 null 105.5573ms
+2026-04-20 16:29:51.150 +05:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5233/, Response status code: 404
+2026-04-20 16:30:03.322 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/ - null null
+2026-04-20 16:30:03.333 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/ - 404 0 null 11.2319ms
+2026-04-20 16:30:03.341 +05:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5233/, Response status code: 404
+2026-04-20 16:30:09.190 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/index.html - null null
+2026-04-20 16:30:09.318 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/index.html - 200 null text/html;charset=utf-8 127.8041ms
+2026-04-20 16:30:09.654 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5233/swagger/v1/swagger.json - null null
+2026-04-20 16:30:09.844 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5233/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 189.2046ms
+2026-04-20 16:30:36.780 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - application/json 89
+2026-04-20 16:30:36.980 +05:30 [INF] Executing endpoint 'QuickBite.Payment.Controllers.PaymentController.ProcessPayment (QuickBite.Payment)'
+2026-04-20 16:30:37.083 +05:30 [INF] Route matched with {action = "ProcessPayment", controller = "Payment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ProcessPayment(QuickBite.Payment.DTOs.ProcessPaymentDto) on controller QuickBite.Payment.Controllers.PaymentController (QuickBite.Payment).
+2026-04-20 16:30:42.028 +05:30 [INF] Executed action QuickBite.Payment.Controllers.PaymentController.ProcessPayment (QuickBite.Payment) in 4933.0602ms
+2026-04-20 16:30:42.031 +05:30 [INF] Executed endpoint 'QuickBite.Payment.Controllers.PaymentController.ProcessPayment (QuickBite.Payment)'
+2026-04-20 16:30:42.035 +05:30 [ERR] An unhandled exception has occurred while executing the request.
+MySqlConnector.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts.
+   at MySqlConnector.Core.ServerSession.OpenTcpSocketAsync(ConnectionSettings cs, ILoadBalancer loadBalancer, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 1063
+   at MySqlConnector.Core.ServerSession.ConnectAsync(ConnectionSettings cs, MySqlConnection connection, Int64 startingTimestamp, ILoadBalancer loadBalancer, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 425
+   at MySqlConnector.MySqlConnection.CreateSessionAsync(ConnectionPool pool, Int64 startingTimestamp, Activity activity, Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 932
+   at MySqlConnector.MySqlConnection.CreateSessionAsync(ConnectionPool pool, Int64 startingTimestamp, Activity activity, Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 938
+   at MySqlConnector.MySqlConnection.OpenAsync(Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 419
+   at MySqlConnector.MySqlConnection.Open() in /_/src/MySqlConnector/MySqlConnection.cs:line 381
+   at Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(String connectionString)
+   at Program.<>c__DisplayClass0_0.<<Main>$>b__0(DbContextOptionsBuilder options) in F:\QuickBite\QuickBite.Payment\Program.cs:line 25
+   at Microsoft.Extensions.DependencyInjection.EntityFrameworkServiceCollectionExtensions.<>c__DisplayClass1_0`2.<AddDbContext>b__0(IServiceProvider _, DbContextOptionsBuilder b)
+   at Microsoft.Extensions.DependencyInjection.EntityFrameworkServiceCollectionExtensions.CreateDbContextOptions[TContext](IServiceProvider applicationServiceProvider, Action`2 optionsAction)
+   at Microsoft.Extensions.DependencyInjection.EntityFrameworkServiceCollectionExtensions.<>c__DisplayClass17_0`1.<AddCoreServices>b__0(IServiceProvider p)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass2_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at lambda_method9(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-04-20 16:30:42.150 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5233/api/v1/payments/process - 500 null text/plain; charset=utf-8 5370.3281ms
+2026-04-20 16:32:05.089 +05:30 [INF] Application is shutting down...
+2026-04-20 16:36:52.773 +05:30 [INF] Executed DbCommand (366ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [quickbite_payment];
+2026-04-20 16:36:52.984 +05:30 [INF] Executed DbCommand (172ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [quickbite_payment] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2026-04-20 16:36:53.011 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-20 16:36:53.077 +05:30 [INF] Executed DbCommand (19ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2026-04-20 16:36:53.082 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-20 16:36:53.101 +05:30 [INF] Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-20 16:36:53.122 +05:30 [INF] Executed DbCommand (16ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-04-20 16:36:53.135 +05:30 [INF] Applying migration '20260420110644_InitPayment'.
+2026-04-20 16:36:53.169 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Payments] (
+    [PaymentId] uniqueidentifier NOT NULL,
+    [OrderId] uniqueidentifier NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Amount] decimal(18,2) NOT NULL,
+    [Status] int NOT NULL,
+    [Mode] int NOT NULL,
+    [TransactionId] nvarchar(max) NULL,
+    [Currency] nvarchar(max) NOT NULL,
+    [PaidAt] datetime2 NULL,
+    [RefundedAt] datetime2 NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Payments] PRIMARY KEY ([PaymentId])
+);
+2026-04-20 16:36:53.185 +05:30 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Wallets] (
+    [WalletId] uniqueidentifier NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Balance] decimal(18,2) NOT NULL,
+    [UpdatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Wallets] PRIMARY KEY ([WalletId])
+);
+2026-04-20 16:36:53.193 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [WalletStatements] (
+    [StatementId] uniqueidentifier NOT NULL,
+    [WalletId] uniqueidentifier NOT NULL,
+    [Type] nvarchar(max) NOT NULL,
+    [Amount] decimal(18,2) NOT NULL,
+    [Description] nvarchar(max) NOT NULL,
+    [TransactionRef] nvarchar(max) NULL,
+    [CreatedAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_WalletStatements] PRIMARY KEY ([StatementId])
+);
+2026-04-20 16:36:53.203 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Wallets_CustomerId] ON [Wallets] ([CustomerId]);
+2026-04-20 16:36:53.218 +05:30 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260420110644_InitPayment', N'8.0.4');

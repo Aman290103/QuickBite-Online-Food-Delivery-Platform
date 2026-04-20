@@ -10,8 +10,8 @@ namespace QuickBite.Payment.Gateways
         public RazorpayGateway(IConfiguration config)
         {
             _config = config;
-            string key = _config["Razorpay:KeyId"]!;
-            string secret = _config["Razorpay:KeySecret"]!;
+            string key = "rzp_test_SfiZQYAPtU4oMA";
+            string secret = "4ihkNi4cElnaOOjdTs8uNSSQ";
             _client = new RazorpayClient(key, secret);
         }
 
