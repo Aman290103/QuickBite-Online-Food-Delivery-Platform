@@ -20,6 +20,7 @@ namespace QuickBite.Restaurant.Data
                 entity.ToTable("Restaurants");
                 entity.HasIndex(r => r.City);
                 entity.HasIndex(r => r.Cuisine);
+                entity.Property(r => r.MinOrderAmount).HasPrecision(18, 2);
             });
         }
     }

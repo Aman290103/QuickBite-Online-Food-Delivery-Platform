@@ -46,7 +46,15 @@ namespace QuickBite.Restaurant.Services
         public async Task<RestaurantResponseDto?> GetRestaurantByIdAsync(Guid id)
         {
             var cacheKey = $"{CacheKeyPrefix}{id}";
-            var cachedData = await _cache.GetStringAsync(cacheKey);
+            string? cachedData = null;
+            try
+            {
+                cachedData = await _cache.GetStringAsync(cacheKey);
+            }
+            catch (Exception)
+            {
+                // Redis is down, proceed to database
+            }
 
             if (!string.IsNullOrEmpty(cachedData))
             {
@@ -60,10 +68,17 @@ namespace QuickBite.Restaurant.Services
             
             if (restaurant.IsApproved)
             {
-                await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(dto), new DistributedCacheEntryOptions
+                try
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-                });
+                    await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(dto), new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                    });
+                }
+                catch (Exception)
+                {
+                    // Redis is down, skip caching
+                }
             }
 
             return dto;
@@ -106,7 +121,11 @@ namespace QuickBite.Restaurant.Services
             restaurant.EstimatedDeliveryMin = dto.EstimatedDeliveryMin;
 
             await _repository.UpdateAsync(restaurant);
-            await _cache.RemoveAsync($"{CacheKeyPrefix}{id}");
+            try
+            {
+                await _cache.RemoveAsync($"{CacheKeyPrefix}{id}");
+            }
+            catch (Exception) { }
             
             return MapToDto(restaurant);
         }
@@ -128,7 +147,11 @@ namespace QuickBite.Restaurant.Services
 
             restaurant.IsOpen = !restaurant.IsOpen;
             await _repository.UpdateAsync(restaurant);
-            await _cache.RemoveAsync($"{CacheKeyPrefix}{id}");
+            try
+            {
+                await _cache.RemoveAsync($"{CacheKeyPrefix}{id}");
+            }
+            catch (Exception) { }
         }
 
         public async Task UpdateRatingAsync(Guid id, double newRating)
@@ -138,7 +161,11 @@ namespace QuickBite.Restaurant.Services
 
             restaurant.AvgRating = newRating;
             await _repository.UpdateAsync(restaurant);
-            await _cache.RemoveAsync($"{CacheKeyPrefix}{id}");
+            try
+            {
+                await _cache.RemoveAsync($"{CacheKeyPrefix}{id}");
+            }
+            catch (Exception) { }
         }
 
         public async Task DeleteRestaurantAsync(Guid id)
@@ -147,7 +174,11 @@ namespace QuickBite.Restaurant.Services
             if (restaurant == null) throw new Exception("Restaurant not found.");
 
             await _repository.DeleteAsync(restaurant);
-            await _cache.RemoveAsync($"{CacheKeyPrefix}{id}");
+            try
+            {
+                await _cache.RemoveAsync($"{CacheKeyPrefix}{id}");
+            }
+            catch (Exception) { }
         }
 
         private RestaurantResponseDto MapToDto(Entities.Restaurant r) => new RestaurantResponseDto(

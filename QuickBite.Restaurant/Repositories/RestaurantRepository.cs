@@ -27,14 +27,14 @@ namespace QuickBite.Restaurant.Repositories
         public async Task<IEnumerable<Entities.Restaurant>> SearchByNameAsync(string name)
         {
             return await _context.Restaurants
-                .Where(r => EF.Functions.ILike(r.Name, $"%{name}%") && r.IsApproved)
+                .Where(r => r.Name.Contains(name) && r.IsApproved)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Entities.Restaurant>> FilterByCuisineAsync(string cuisine)
         {
             return await _context.Restaurants
-                .Where(r => EF.Functions.ILike(r.Cuisine, cuisine) && r.IsApproved)
+                .Where(r => r.Cuisine.Contains(cuisine) && r.IsApproved)
                 .ToListAsync();
         }
 
