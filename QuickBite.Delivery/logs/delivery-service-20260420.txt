@@ -57,3 +57,89 @@ CREATE UNIQUE INDEX [IX_DeliveryAgents_UserId] ON [DeliveryAgents] ([UserId]);
 2026-04-20 17:11:14.600 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
 VALUES (N'20260420114108_InitDelivery', N'8.0.4');
+2026-04-20 17:14:14.179 +05:30 [INF] User profile is available. Using 'C:\Users\Lenovo\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-20 17:14:14.278 +05:30 [INF] Now listening on: http://localhost:5122
+2026-04-20 17:14:14.282 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-20 17:14:14.284 +05:30 [INF] Hosting environment: Development
+2026-04-20 17:14:14.286 +05:30 [INF] Content root path: F:\QuickBite\QuickBite.Delivery
+2026-04-20 17:15:12.984 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/ - null null
+2026-04-20 17:15:15.749 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/ - 404 0 null 2766.5567ms
+2026-04-20 17:15:15.767 +05:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5122/, Response status code: 404
+2026-04-20 17:15:25.748 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/swagger - null null
+2026-04-20 17:15:25.776 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/swagger - 301 0 null 27.8225ms
+2026-04-20 17:15:25.792 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/swagger/index.html - null null
+2026-04-20 17:15:25.929 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/swagger/index.html - 200 null text/html;charset=utf-8 137.0289ms
+2026-04-20 17:15:25.982 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/swagger/swagger-ui.css - null null
+2026-04-20 17:15:25.984 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/swagger/swagger-ui-bundle.js - null null
+2026-04-20 17:15:25.991 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/swagger/swagger-ui-standalone-preset.js - null null
+2026-04-20 17:15:26.015 +05:30 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-04-20 17:15:26.015 +05:30 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-04-20 17:15:26.017 +05:30 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-04-20 17:15:26.018 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/swagger/swagger-ui.css - 200 152034 text/css 35.9604ms
+2026-04-20 17:15:26.019 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/swagger/swagger-ui-standalone-preset.js - 200 230280 text/javascript 27.7122ms
+2026-04-20 17:15:26.022 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/swagger/swagger-ui-bundle.js - 200 1456926 text/javascript 37.7057ms
+2026-04-20 17:15:26.302 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/swagger/v1/swagger.json - null null
+2026-04-20 17:15:26.328 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/swagger/favicon-32x32.png - null null
+2026-04-20 17:15:26.337 +05:30 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-04-20 17:15:26.344 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/swagger/favicon-32x32.png - 200 628 image/png 15.6696ms
+2026-04-20 17:15:26.495 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 193.5388ms
+2026-04-20 17:17:00.872 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5122/api/v1/agents/register - application/json 119
+2026-04-20 17:17:00.893 +05:30 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-04-20 17:17:00.907 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2026-04-20 17:17:00.913 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5122/api/v1/agents/register - 401 0 null 41.303ms
+2026-04-20 17:19:51.838 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5122/api/v1/agents/register - application/json 119
+2026-04-20 17:19:52.033 +05:30 [INF] Executing endpoint 'QuickBite.Delivery.Controllers.DeliveryController.Register (QuickBite.Delivery)'
+2026-04-20 17:19:52.076 +05:30 [INF] Route matched with {action = "Register", controller = "Delivery"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Register(QuickBite.Delivery.DTOs.RegisterAgentDto) on controller QuickBite.Delivery.Controllers.DeliveryController (QuickBite.Delivery).
+2026-04-20 17:19:53.961 +05:30 [INF] Executed DbCommand (194ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [d].[AgentId], [d].[AvgRating], [d].[CreatedAt], [d].[CurrentLatitude], [d].[CurrentLongitude], [d].[FullName], [d].[IsAvailable], [d].[IsVerified], [d].[Phone], [d].[TotalDeliveries], [d].[UserId], [d].[VehicleNumber], [d].[VehicleType]
+FROM [DeliveryAgents] AS [d]
+WHERE [d].[UserId] = @__userId_0
+2026-04-20 17:19:54.300 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Precision = 3) (Scale = 2) (DbType = Decimal), @p2='?' (DbType = DateTime2), @p3='?' (DbType = Double), @p4='?' (DbType = Double), @p5='?' (Size = 4000), @p6='?' (DbType = Boolean), @p7='?' (DbType = Boolean), @p8='?' (Size = 4000), @p9='?' (DbType = Int32), @p10='?' (DbType = Guid), @p11='?' (Size = 4000), @p12='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [DeliveryAgents] ([AgentId], [AvgRating], [CreatedAt], [CurrentLatitude], [CurrentLongitude], [FullName], [IsAvailable], [IsVerified], [Phone], [TotalDeliveries], [UserId], [VehicleNumber], [VehicleType])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12);
+2026-04-20 17:19:54.335 +05:30 [INF] Executing OkObjectResult, writing value of type 'QuickBite.Delivery.DTOs.AgentResponseDto'.
+2026-04-20 17:19:54.374 +05:30 [INF] Executed action QuickBite.Delivery.Controllers.DeliveryController.Register (QuickBite.Delivery) in 2282.7666ms
+2026-04-20 17:19:54.380 +05:30 [INF] Executed endpoint 'QuickBite.Delivery.Controllers.DeliveryController.Register (QuickBite.Delivery)'
+2026-04-20 17:19:54.390 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5122/api/v1/agents/register - 200 null application/json; charset=utf-8 2552.4154ms
+2026-04-20 17:20:19.952 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/api/v1/agents/fc669c7a-2da9-42f2-891a-1283e6a5250b - null null
+2026-04-20 17:20:19.965 +05:30 [INF] Executing endpoint 'QuickBite.Delivery.Controllers.DeliveryController.GetProfile (QuickBite.Delivery)'
+2026-04-20 17:20:19.987 +05:30 [INF] Route matched with {action = "GetProfile", controller = "Delivery"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProfile(System.Guid) on controller QuickBite.Delivery.Controllers.DeliveryController (QuickBite.Delivery).
+2026-04-20 17:20:20.114 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[@__get_Item_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [d].[AgentId], [d].[AvgRating], [d].[CreatedAt], [d].[CurrentLatitude], [d].[CurrentLongitude], [d].[FullName], [d].[IsAvailable], [d].[IsVerified], [d].[Phone], [d].[TotalDeliveries], [d].[UserId], [d].[VehicleNumber], [d].[VehicleType]
+FROM [DeliveryAgents] AS [d]
+WHERE [d].[AgentId] = @__get_Item_0
+2026-04-20 17:20:20.141 +05:30 [INF] Executing OkObjectResult, writing value of type 'QuickBite.Delivery.DTOs.AgentResponseDto'.
+2026-04-20 17:20:20.148 +05:30 [INF] Executed action QuickBite.Delivery.Controllers.DeliveryController.GetProfile (QuickBite.Delivery) in 156.3768ms
+2026-04-20 17:20:20.154 +05:30 [INF] Executed endpoint 'QuickBite.Delivery.Controllers.DeliveryController.GetProfile (QuickBite.Delivery)'
+2026-04-20 17:20:20.158 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/api/v1/agents/fc669c7a-2da9-42f2-891a-1283e6a5250b - 200 null application/json; charset=utf-8 206.3862ms
+2026-04-20 17:20:34.090 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5122/api/v1/agents/nearby?lat=55&lon=5&radius=5 - null null
+2026-04-20 17:20:34.100 +05:30 [INF] Executing endpoint 'QuickBite.Delivery.Controllers.DeliveryController.GetNearbyAgents (QuickBite.Delivery)'
+2026-04-20 17:20:34.112 +05:30 [INF] Route matched with {action = "GetNearbyAgents", controller = "Delivery"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetNearbyAgents(Double, Double, Double) on controller QuickBite.Delivery.Controllers.DeliveryController (QuickBite.Delivery).
+2026-04-20 17:20:34.324 +05:30 [INF] Executed DbCommand (54ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[AgentId], [d].[AvgRating], [d].[CreatedAt], [d].[CurrentLatitude], [d].[CurrentLongitude], [d].[FullName], [d].[IsAvailable], [d].[IsVerified], [d].[Phone], [d].[TotalDeliveries], [d].[UserId], [d].[VehicleNumber], [d].[VehicleType]
+FROM [DeliveryAgents] AS [d]
+WHERE [d].[IsAvailable] = CAST(1 AS bit) AND [d].[IsVerified] = CAST(1 AS bit) AND [d].[CurrentLatitude] IS NOT NULL AND [d].[CurrentLongitude] IS NOT NULL
+2026-04-20 17:20:34.337 +05:30 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectIPartitionIterator`2[[<>f__AnonymousType2`2[[QuickBite.Delivery.Entities.DeliveryAgent, QuickBite.Delivery, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Double, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], QuickBite.Delivery, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[QuickBite.Delivery.DTOs.AgentResponseDto, QuickBite.Delivery, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-20 17:20:34.352 +05:30 [INF] Executed action QuickBite.Delivery.Controllers.DeliveryController.GetNearbyAgents (QuickBite.Delivery) in 235.3777ms
+2026-04-20 17:20:34.358 +05:30 [INF] Executed endpoint 'QuickBite.Delivery.Controllers.DeliveryController.GetNearbyAgents (QuickBite.Delivery)'
+2026-04-20 17:20:34.364 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5122/api/v1/agents/nearby?lat=55&lon=5&radius=5 - 200 null application/json; charset=utf-8 273.3606ms
+2026-04-20 17:21:24.568 +05:30 [INF] Request starting HTTP/1.1 PUT http://localhost:5122/api/v1/agents/fc669c7a-2da9-42f2-891a-1283e6a5250b/availability - application/json 26
+2026-04-20 17:21:24.597 +05:30 [INF] Executing endpoint 'QuickBite.Delivery.Controllers.DeliveryController.ToggleAvailability (QuickBite.Delivery)'
+2026-04-20 17:21:24.613 +05:30 [INF] Route matched with {action = "ToggleAvailability", controller = "Delivery"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ToggleAvailability(System.Guid, QuickBite.Delivery.DTOs.ToggleAvailabilityDto) on controller QuickBite.Delivery.Controllers.DeliveryController (QuickBite.Delivery).
+2026-04-20 17:21:24.680 +05:30 [INF] Executed DbCommand (30ms) [Parameters=[@__get_Item_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [d].[AgentId], [d].[AvgRating], [d].[CreatedAt], [d].[CurrentLatitude], [d].[CurrentLongitude], [d].[FullName], [d].[IsAvailable], [d].[IsVerified], [d].[Phone], [d].[TotalDeliveries], [d].[UserId], [d].[VehicleNumber], [d].[VehicleType]
+FROM [DeliveryAgents] AS [d]
+WHERE [d].[AgentId] = @__get_Item_0
+2026-04-20 17:21:24.749 +05:30 [INF] Executed DbCommand (18ms) [Parameters=[@p12='?' (DbType = Guid), @p0='?' (Precision = 3) (Scale = 2) (DbType = Decimal), @p1='?' (DbType = DateTime2), @p2='?' (DbType = Double), @p3='?' (DbType = Double), @p4='?' (Size = 4000), @p5='?' (DbType = Boolean), @p6='?' (DbType = Boolean), @p7='?' (Size = 4000), @p8='?' (DbType = Int32), @p9='?' (DbType = Guid), @p10='?' (Size = 4000), @p11='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [DeliveryAgents] SET [AvgRating] = @p0, [CreatedAt] = @p1, [CurrentLatitude] = @p2, [CurrentLongitude] = @p3, [FullName] = @p4, [IsAvailable] = @p5, [IsVerified] = @p6, [Phone] = @p7, [TotalDeliveries] = @p8, [UserId] = @p9, [VehicleNumber] = @p10, [VehicleType] = @p11
+OUTPUT 1
+WHERE [AgentId] = @p12;
+2026-04-20 17:21:24.783 +05:30 [INF] Executing StatusCodeResult, setting HTTP status code 204
+2026-04-20 17:21:24.787 +05:30 [INF] Executed action QuickBite.Delivery.Controllers.DeliveryController.ToggleAvailability (QuickBite.Delivery) in 164.642ms
+2026-04-20 17:21:24.794 +05:30 [INF] Executed endpoint 'QuickBite.Delivery.Controllers.DeliveryController.ToggleAvailability (QuickBite.Delivery)'
+2026-04-20 17:21:24.800 +05:30 [INF] Request finished HTTP/1.1 PUT http://localhost:5122/api/v1/agents/fc669c7a-2da9-42f2-891a-1283e6a5250b/availability - 204 null null 231.5316ms

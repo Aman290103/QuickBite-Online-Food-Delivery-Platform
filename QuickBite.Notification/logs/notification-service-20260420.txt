@@ -1,0 +1,46 @@
+2026-04-20 22:23:20.982 +05:30 [INF] Executed DbCommand (272ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [quickbite_notification];
+2026-04-20 22:23:21.140 +05:30 [INF] Executed DbCommand (118ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [quickbite_notification] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2026-04-20 22:23:21.164 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-20 22:23:21.235 +05:30 [INF] Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2026-04-20 22:23:21.237 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-04-20 22:23:21.252 +05:30 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-04-20 22:23:21.271 +05:30 [INF] Executed DbCommand (16ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-04-20 22:23:21.289 +05:30 [INF] Applying migration '20260420165309_InitNotification'.
+2026-04-20 22:23:21.323 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Notifications] (
+    [NotificationId] uniqueidentifier NOT NULL,
+    [RecipientId] uniqueidentifier NOT NULL,
+    [Type] int NOT NULL,
+    [Channel] int NOT NULL,
+    [Title] nvarchar(max) NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [RelatedId] nvarchar(max) NULL,
+    [RelatedType] nvarchar(max) NULL,
+    [IsRead] bit NOT NULL,
+    [IsAudio] bit NOT NULL,
+    [SentAt] datetime2 NOT NULL,
+    CONSTRAINT [PK_Notifications] PRIMARY KEY ([NotificationId])
+);
+2026-04-20 22:23:21.326 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Notifications_RecipientId] ON [Notifications] ([RecipientId]);
+2026-04-20 22:23:21.328 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Notifications_RecipientId_IsRead] ON [Notifications] ([RecipientId], [IsRead]);
+2026-04-20 22:23:21.334 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260420165309_InitNotification', N'8.0.4');

@@ -1,0 +1,6 @@
+@QuickBite.Notification_HostAddress = http://localhost:5252
+
+GET {{QuickBite.Notification_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
