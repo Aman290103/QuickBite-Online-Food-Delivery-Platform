@@ -50,7 +50,7 @@ namespace QuickBite.Notification.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN,OWNER")]
         [HttpPost("broadcast")]
         public async Task<IActionResult> Broadcast([FromBody] BroadcastDto dto)
         {
