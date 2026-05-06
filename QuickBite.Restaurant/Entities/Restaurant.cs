@@ -10,8 +10,10 @@ namespace QuickBite.Restaurant.Entities
         [Required]
         public Guid OwnerId { get; set; }
         
+        public string? PlaceId { get; set; } // Google Place ID for deduplication
+        
         [Required]
-        [MaxLength(100)]
+        [MaxLength(255)]
         public string Name { get; set; } = string.Empty;
         
         public string Description { get; set; } = string.Empty;
@@ -20,9 +22,11 @@ namespace QuickBite.Restaurant.Entities
         public string Cuisine { get; set; } = string.Empty;
         
         [Required]
+        [MaxLength(500)]
         public string Address { get; set; } = string.Empty;
         
         [Required]
+        [MaxLength(100)]
         public string City { get; set; } = string.Empty;
         
         [Required]
@@ -32,9 +36,11 @@ namespace QuickBite.Restaurant.Entities
         public double Longitude { get; set; }
         
         [Phone]
+        [MaxLength(100)]
         public string Phone { get; set; } = string.Empty;
         
         public double AvgRating { get; set; } = 0.0;
+        public int ReviewCount { get; set; } = 0;
         
         public bool IsOpen { get; set; } = false;
         
@@ -45,6 +51,9 @@ namespace QuickBite.Restaurant.Entities
         public decimal MinOrderAmount { get; set; } = 0;
         
         public int EstimatedDeliveryMin { get; set; } = 30;
+        
+        [MaxLength(1000)]
+        public string? ImageUrl { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

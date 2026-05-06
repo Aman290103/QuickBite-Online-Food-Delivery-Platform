@@ -9,17 +9,19 @@ namespace QuickBite.Menu.DTOs
         int DisplayOrder
     );
 
-    public record AddMenuItemDto(
-        [Required] Guid RestaurantId,
-        [Required] Guid CategoryId,
-        [Required] string Name,
-        string Description,
-        [Required] decimal Price,
-        decimal? DiscountedPrice,
-        bool IsVeg,
-        int Calories,
-        List<string> Tags
-    );
+    public class AddMenuItemDto
+    {
+        [Required] public Guid RestaurantId { get; set; }
+        [Required] public Guid CategoryId { get; set; }
+        [Required] public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        [Required] public decimal Price { get; set; }
+        public decimal? DiscountedPrice { get; set; }
+        public bool IsVeg { get; set; }
+        public int Calories { get; set; }
+        public string? ImageUrl { get; set; }
+        public List<string> Tags { get; set; } = new();
+    }
 
     public record UpdateMenuItemDto(
         string Name,
@@ -28,6 +30,7 @@ namespace QuickBite.Menu.DTOs
         decimal? DiscountedPrice,
         bool IsVeg,
         int Calories,
+        string? ImageUrl,
         List<string> Tags
     );
 

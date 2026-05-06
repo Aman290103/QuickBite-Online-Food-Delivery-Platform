@@ -9,11 +9,17 @@ namespace QuickBite.Restaurant.Interfaces
         Task<IEnumerable<RestaurantResponseDto>> GetNearbyRestaurantsAsync(double lat, double lon, double radius);
         Task<IEnumerable<RestaurantResponseDto>> SearchRestaurantsAsync(string name);
         Task<IEnumerable<RestaurantResponseDto>> GetRestaurantsByCuisineAsync(string cuisine);
+        Task<IEnumerable<RestaurantResponseDto>> GetPendingApprovalsAsync();
         Task<RestaurantResponseDto> UpdateRestaurantAsync(Guid id, Guid ownerId, UpdateRestaurantDto dto);
         Task ApproveRestaurantAsync(Guid id);
         Task ToggleRestaurantStatusAsync(Guid id, Guid ownerId);
         Task UpdateRatingAsync(Guid id, double newRating);
+        Task<IEnumerable<RestaurantResponseDto>> GetRestaurantsByOwnerAsync(Guid ownerId);
         Task DeleteRestaurantAsync(Guid id);
+        Task<bool> IsDuplicateAsync(string name, string address, string? placeId = null);
+        Task UpdateTravelTimeAsync(Guid restaurantId, int estimatedMinutes);
+        Task<IEnumerable<RestaurantResponseDto>> GetAllRestaurantsAsync();
+
 
         // Review Logic
         Task<ReviewResponseDto> SubmitReviewAsync(Guid restaurantId, Guid customerId, AddReviewDto dto);

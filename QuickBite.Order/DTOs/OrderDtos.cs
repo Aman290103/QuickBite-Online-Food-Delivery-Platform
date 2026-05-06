@@ -18,23 +18,26 @@ namespace QuickBite.Order.DTOs
     );
 
     public record OrderResponseDto(
-        Guid OrderId,
-        Guid CustomerId,
+        Guid Id,
+        string RestaurantName,
+        string OrderNumber,
         Guid RestaurantId,
-        Guid? DeliveryAgentId,
+        List<OrderItemDto> Items,
         decimal TotalAmount,
-        decimal Discount,
-        decimal FinalAmount,
-        string ModeOfPayment,
-        OrderStatus Status,
-        DateTime OrderDate,
-        DateTime? EstimatedDelivery,
+        string Status,
+        DateTime CreatedAt,
         string DeliveryAddress,
         string? SpecialInstructions,
-        List<OrderItemDto> Items
+        Guid? AgentId
     );
 
     public record UpdateStatusDto(
         [Required] OrderStatus NewStatus
+    );
+
+    public record RestaurantStatsDto(
+        decimal TodayRevenue,
+        int ActiveOrdersCount,
+        int TotalOrdersToday
     );
 }

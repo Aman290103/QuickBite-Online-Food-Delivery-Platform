@@ -19,10 +19,21 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
-// --- 2. Database (SQL Server) ---
+// --- 2. Database (Hybrid) ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DeliveryDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+    if (connectionString!.Contains("Host="))
+    {
+        options.UseNpgsql(connectionString, npgsqlOptions => 
+            npgsqlOptions.EnableRetryOnFailure());
+    }
+    else
+    {
+        options.UseSqlServer(connectionString, sqlOptions => 
+            sqlOptions.EnableRetryOnFailure());
+    }
+});
 
 // --- 3. Redis & SignalR ---
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -78,10 +89,30 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// --- Automatic Migrations ---
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<DeliveryDbContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "QuickBite.Delivery API V1");
+        c.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseAuthentication();

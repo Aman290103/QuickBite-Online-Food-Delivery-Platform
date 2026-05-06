@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -127,8 +128,8 @@ app.UseAuthorization();
 app.MapGet("/health", async (IHttpClientFactory factory) =>
 {
     var services = new[] { 
-        ("Auth", 5001), ("Restaurant", 5002), ("Menu", 5003), ("Cart", 5004), 
-        ("Order", 5005), ("Payment", 5006), ("Delivery", 5007), ("Notification", 5009) 
+        ("auth-service", 8080), ("restaurant-service", 8080), ("menu-service", 8080), ("cart-service", 8080), 
+        ("order-service", 8080), ("payment-service", 8080), ("delivery-service", 8080), ("notification-service", 8080) 
     };
 
     var client = factory.CreateClient();
@@ -137,7 +138,7 @@ app.MapGet("/health", async (IHttpClientFactory factory) =>
     foreach (var (name, port) in services)
     {
         try {
-            var response = await client.GetAsync($"http://localhost:{port}/health");
+            var response = await client.GetAsync($"http://{name}:{port}/health");
             results[name] = response.IsSuccessStatusCode ? "Healthy" : "Unhealthy";
         } catch { results[name] = "Down"; }
     }

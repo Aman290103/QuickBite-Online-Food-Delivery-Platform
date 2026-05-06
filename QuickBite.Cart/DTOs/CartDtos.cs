@@ -4,6 +4,7 @@ namespace QuickBite.Cart.DTOs
 {
     public record AddToCartDto(
         [Required] Guid RestaurantId,
+        [Required] string RestaurantName,
         [Required] Guid MenuItemId,
         [Required] string Name,
         [Required] decimal Price,
@@ -32,9 +33,11 @@ namespace QuickBite.Cart.DTOs
     public record CartResponseDto(
         Guid CartId,
         Guid RestaurantId,
+        string RestaurantName,
         List<CartItemResponseDto> Items,
         decimal SubTotal,
         decimal DiscountAmount,
+        decimal TaxAmount,
         string? AppliedPromoCode,
         decimal GrandTotal
     );

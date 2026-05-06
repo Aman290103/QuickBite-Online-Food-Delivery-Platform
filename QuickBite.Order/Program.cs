@@ -12,6 +12,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
+
 // --- 1. Logging (Serilog) ---
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -19,10 +21,20 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
-// --- 2. Database (MySQL) ---
+// --- 2. Database (Hybrid) ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<OrderDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+{
+    if (connectionString!.Contains("Host="))
+    {
+        options.UseNpgsql(connectionString, npgsqlOptions => 
+            npgsqlOptions.EnableRetryOnFailure());
+    }
+    else
+    {
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    }
+});
 
 // --- 3. Messaging (MassTransit + RabbitMQ) ---
 builder.Services.AddMassTransit(x =>
@@ -85,10 +97,30 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// --- Automatic Migrations ---
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<OrderDbContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "QuickBite.Order API V1");
+        c.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseAuthentication();
