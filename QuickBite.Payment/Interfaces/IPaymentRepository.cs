@@ -21,6 +21,7 @@ namespace QuickBite.Payment.Interfaces
         Task<IEnumerable<WalletStatement>> GetWalletStatementsAsync(Guid walletId);
         
         Task<IDbContextTransaction> BeginTransactionAsync();
+        IExecutionStrategy CreateExecutionStrategy();
         Task SaveChangesAsync();
     }
 }

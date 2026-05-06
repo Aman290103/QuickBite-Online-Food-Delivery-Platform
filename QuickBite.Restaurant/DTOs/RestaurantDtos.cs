@@ -2,19 +2,24 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QuickBite.Restaurant.DTOs
 {
-    public record RegisterRestaurantDto(
-        [Required] string Name,
-        [Required] string Description,
-        [Required] string Cuisine,
-        [Required] string Address,
-        [Required] string City,
-        [Required] double Latitude,
-        [Required] double Longitude,
-        [Required] string Phone,
-        double DeliveryRadiusKm,
-        decimal MinOrderAmount,
-        int EstimatedDeliveryMin
-    );
+    public class RegisterRestaurantDto
+    {
+        public Guid Id { get; set; } // Optional ID for internal batch tracking
+        [Required] public string Name { get; set; } = string.Empty;
+        [Required] public string Description { get; set; } = string.Empty;
+        [Required] public string Cuisine { get; set; } = string.Empty;
+        [Required] public string Address { get; set; } = string.Empty;
+        [Required] public string City { get; set; } = string.Empty;
+        [Required] public double Latitude { get; set; }
+        [Required] public double Longitude { get; set; }
+        [Required] public string Phone { get; set; } = string.Empty;
+        public double DeliveryRadiusKm { get; set; } = 5.0;
+        public decimal MinOrderAmount { get; set; } = 0;
+        public int EstimatedDeliveryMin { get; set; } = 30;
+        public string? ImageUrl { get; set; }
+        public string? PlaceId { get; set; }
+        public float Rating { get; set; } = 4.0f;
+    }
 
     public record UpdateRestaurantDto(
         string Name,
@@ -27,11 +32,12 @@ namespace QuickBite.Restaurant.DTOs
         string Phone,
         double DeliveryRadiusKm,
         decimal MinOrderAmount,
-        int EstimatedDeliveryMin
+        int EstimatedDeliveryMin,
+        string? ImageUrl
     );
 
     public record RestaurantResponseDto(
-        Guid RestaurantId,
+        Guid Id,
         Guid OwnerId,
         string Name,
         string Description,
@@ -47,6 +53,9 @@ namespace QuickBite.Restaurant.DTOs
         double DeliveryRadiusKm,
         decimal MinOrderAmount,
         int EstimatedDeliveryMin,
+        string? ImageUrl,
+        string? PlaceId,
+        int ReviewCount,
         DateTime CreatedAt
     );
 

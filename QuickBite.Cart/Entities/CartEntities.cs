@@ -14,11 +14,16 @@ namespace QuickBite.Cart.Entities
         [Required]
         public Guid RestaurantId { get; set; }
         
+        public string RestaurantName { get; set; } = "Restaurant";
+        
         [Column(TypeName = "decimal(18,2)")]
         public decimal SubTotal { get; set; } = 0;
         
         [Column(TypeName = "decimal(18,2)")]
         public decimal DiscountAmount { get; set; } = 0;
+        
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal TaxAmount { get; set; } = 0;
         
         [Column(TypeName = "decimal(18,2)")]
         public decimal GrandTotal { get; set; } = 0;

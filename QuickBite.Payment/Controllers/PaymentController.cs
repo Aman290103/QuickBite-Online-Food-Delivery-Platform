@@ -21,9 +21,38 @@ namespace QuickBite.Payment.Controllers
         [HttpPost("process")]
         public async Task<IActionResult> ProcessPayment([FromBody] ProcessPaymentDto dto)
         {
-            var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _paymentService.ProcessPaymentAsync(customerId, dto);
-            return Ok(result);
+            try
+            {
+                var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+                var result = await _paymentService.ProcessPaymentAsync(customerId, dto);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InternalProcessPayment([FromBody] dynamic dto)
+        {
+            // Internal call from Order Service to initiate a payment record
+            // For now, we just return Ok to let the order be created.
+            // The actual Razorpay verification happens later via the /process endpoint.
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPost("create-order")]
+        public async Task<IActionResult> CreateOrder([FromQuery] decimal amount)
+        {
+            var receipt = Guid.NewGuid().ToString();
+            var orderId = await _paymentService.CreateRazorpayOrderAsync(amount, receipt);
+            return Ok(new { orderId });
         }
 
         [Authorize(Roles = "ADMIN")]

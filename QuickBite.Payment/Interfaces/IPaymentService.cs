@@ -13,5 +13,7 @@ namespace QuickBite.Payment.Interfaces
         Task<WalletResponseDto> GetWalletBalanceAsync(Guid customerId);
         Task<WalletResponseDto> AddMoneyToWalletAsync(Guid customerId, AddToWalletDto dto);
         Task<IEnumerable<WalletStatementDto>> GetWalletStatementsAsync(Guid customerId);
+        
+        Task<string> CreateRazorpayOrderAsync(decimal amount, string receipt);
     }
 }

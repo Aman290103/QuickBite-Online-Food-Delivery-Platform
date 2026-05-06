@@ -22,13 +22,40 @@ namespace QuickBite.Order.Controllers
         [HttpPost]
         public async Task<IActionResult> PlaceOrder([FromBody] PlaceOrderDto dto)
         {
-            var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _orderService.PlaceOrderAsync(customerId, dto);
-            return CreatedAtAction(nameof(GetById), new { id = result.OrderId }, result);
+            try
+            {
+                var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+                var result = await _orderService.PlaceOrderAsync(customerId, dto);
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = "DELIVERY_AGENT,ADMIN")]
+        [HttpGet("available")]
+        public async Task<IActionResult> GetAvailable()
+        {
+            try
+            {
+                var all = (await _orderService.GetAllOrdersAsync()).ToList();
+                var available = all.Where(o => (o.Status == "PLACED" || o.Status == "CONFIRMED" || o.Status == "PREPARING" || o.Status == "READY") && o.AgentId == null).ToList();
+                return Ok(available);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [Authorize]
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _orderService.GetOrderByIdAsync(id);
@@ -46,6 +73,12 @@ namespace QuickBite.Order.Controllers
         }
 
         [Authorize(Roles = "OWNER,ADMIN")]
+        [HttpGet("restaurant/{rId}/stats")]
+        public async Task<IActionResult> GetRestaurantStats(Guid rId)
+        {
+            var result = await _orderService.GetRestaurantStatsAsync(rId);
+            return Ok(result);
+        }
         [HttpGet("restaurant/{rId}")]
         public async Task<IActionResult> GetRestaurantOrders(Guid rId)
         {
@@ -53,7 +86,17 @@ namespace QuickBite.Order.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "OWNER,AGENT,ADMIN")]
+        [Authorize(Roles = "DELIVERY_AGENT,ADMIN")]
+        [HttpGet("agent")]
+        public async Task<IActionResult> GetAgentOrders()
+        {
+            // Assuming AgentId is the same as UserId for simplicity or stored in Claims
+            var agentId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var result = await _orderService.GetAgentOrdersAsync(agentId);
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "OWNER,DELIVERY_AGENT,ADMIN")]
         [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateStatusDto dto)
         {
@@ -80,7 +123,7 @@ namespace QuickBite.Order.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "DELIVERY_AGENT,ADMIN")]
         [HttpPut("{id}/assign-agent")]
         public async Task<IActionResult> AssignAgent(Guid id, [FromQuery] Guid agentId)
         {
@@ -94,6 +137,20 @@ namespace QuickBite.Order.Controllers
         {
             var result = await _orderService.GetAllOrdersAsync();
             return Ok(result);
+        }
+
+        [HttpPost("seed")]
+        public async Task<IActionResult> SeedOrders([FromQuery] Guid restaurantId, [FromQuery] int count = 5)
+        {
+            try
+            {
+                await _orderService.SeedRestaurantOrdersAsync(restaurantId, count);
+                return Ok(new { Message = $"{count} orders seeded for restaurant {restaurantId}" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }
