@@ -1,0 +1,158 @@
+services:
+  # Databases & Cache
+  - type: database
+    name: quickbite-postgres
+    databaseName: quickbite
+    user: postgres
+
+  - type: redis
+    name: quickbite-redis
+    ipAllowList: [] # Only allow internal connections
+
+  # Microservices
+  - type: web
+    name: auth-service
+    env: docker
+    dockerFilePath: QuickBite.Auth/Dockerfile
+    dockerContext: QuickBite.Auth
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: quickbite-postgres
+          property: connectionString
+
+  - type: web
+    name: restaurant-service
+    env: docker
+    dockerFilePath: QuickBite.Restaurant/Dockerfile
+    dockerContext: QuickBite.Restaurant
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: quickbite-postgres
+          property: connectionString
+      - key: ConnectionStrings__Redis
+        fromRedis:
+          name: quickbite-redis
+          property: connectionString
+
+  - type: web
+    name: menu-service
+    env: docker
+    dockerFilePath: QuickBite.Menu/Dockerfile
+    dockerContext: QuickBite.Menu
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: quickbite-postgres
+          property: connectionString
+      - key: ConnectionStrings__Redis
+        fromRedis:
+          name: quickbite-redis
+          property: connectionString
+
+  - type: web
+    name: cart-service
+    env: docker
+    dockerFilePath: QuickBite.Cart/Dockerfile
+    dockerContext: QuickBite.Cart
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: quickbite-postgres
+          property: connectionString
+      - key: ConnectionStrings__Redis
+        fromRedis:
+          name: quickbite-redis
+          property: connectionString
+
+  - type: web
+    name: order-service
+    env: docker
+    dockerFilePath: QuickBite.Order/Dockerfile
+    dockerContext: QuickBite.Order
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: quickbite-postgres
+          property: connectionString
+      - key: Services__CartUrl
+        value: http://cart-service:8080/
+      - key: Services__PaymentUrl
+        value: http://payment-service:8080/
+      - key: RabbitMQ__Host
+        value: # You will need an external RabbitMQ provider like CloudAMQP for production
+
+  - type: web
+    name: payment-service
+    env: docker
+    dockerFilePath: QuickBite.Payment/Dockerfile
+    dockerContext: QuickBite.Payment
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: quickbite-postgres
+          property: connectionString
+
+  - type: web
+    name: delivery-service
+    env: docker
+    dockerFilePath: QuickBite.Delivery/Dockerfile
+    dockerContext: QuickBite.Delivery
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: quickbite-postgres
+          property: connectionString
+
+  - type: web
+    name: notification-service
+    env: docker
+    dockerFilePath: QuickBite.Notification/Dockerfile
+    dockerContext: QuickBite.Notification
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: quickbite-postgres
+          property: connectionString
+
+  - type: web
+    name: gateway-service
+    env: docker
+    dockerFilePath: QuickBite.Gateway/Dockerfile
+    dockerContext: QuickBite.Gateway
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ReverseProxy__Clusters__auth-cluster__Destinations__destination1__Address
+        value: http://auth-service:8080/
+      - key: ReverseProxy__Clusters__restaurant-cluster__Destinations__destination1__Address
+        value: http://restaurant-service:8080/
+      - key: ReverseProxy__Clusters__menu-cluster__Destinations__destination1__Address
+        value: http://menu-service:8080/
+      - key: ReverseProxy__Clusters__cart-cluster__Destinations__destination1__Address
+        value: http://cart-service:8080/
+      - key: ReverseProxy__Clusters__order-cluster__Destinations__destination1__Address
+        value: http://order-service:8080/
+      - key: ReverseProxy__Clusters__payment-cluster__Destinations__destination1__Address
+        value: http://payment-service:8080/
+      - key: ReverseProxy__Clusters__delivery-cluster__Destinations__destination1__Address
+        value: http://delivery-service:8080/
+      - key: ReverseProxy__Clusters__notification-cluster__Destinations__destination1__Address
+        value: http://notification-service:8080/
