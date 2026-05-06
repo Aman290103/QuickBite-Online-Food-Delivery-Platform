@@ -2,6 +2,11 @@ databases:
   - name: quickbite-postgres
     databaseName: quickbite
     user: postgres
+    plan: free
+
+redis:
+  - name: quickbite-redis
+    plan: free
 
 services:
   # Microservices
@@ -10,6 +15,7 @@ services:
     env: docker
     dockerFilePath: QuickBite.Auth/Dockerfile
     dockerContext: QuickBite.Auth
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
@@ -23,12 +29,17 @@ services:
     env: docker
     dockerFilePath: QuickBite.Restaurant/Dockerfile
     dockerContext: QuickBite.Restaurant
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
           name: quickbite-postgres
+          property: connectionString
+      - key: ConnectionStrings__Redis
+        fromRedis:
+          name: quickbite-redis
           property: connectionString
 
   - type: web
@@ -36,12 +47,17 @@ services:
     env: docker
     dockerFilePath: QuickBite.Menu/Dockerfile
     dockerContext: QuickBite.Menu
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
           name: quickbite-postgres
+          property: connectionString
+      - key: ConnectionStrings__Redis
+        fromRedis:
+          name: quickbite-redis
           property: connectionString
 
   - type: web
@@ -49,6 +65,7 @@ services:
     env: docker
     dockerFilePath: QuickBite.Cart/Dockerfile
     dockerContext: QuickBite.Cart
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
@@ -56,12 +73,17 @@ services:
         fromDatabase:
           name: quickbite-postgres
           property: connectionString
+      - key: ConnectionStrings__Redis
+        fromRedis:
+          name: quickbite-redis
+          property: connectionString
 
   - type: web
     name: order-service
     env: docker
     dockerFilePath: QuickBite.Order/Dockerfile
     dockerContext: QuickBite.Order
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
@@ -79,6 +101,7 @@ services:
     env: docker
     dockerFilePath: QuickBite.Payment/Dockerfile
     dockerContext: QuickBite.Payment
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
@@ -92,6 +115,7 @@ services:
     env: docker
     dockerFilePath: QuickBite.Delivery/Dockerfile
     dockerContext: QuickBite.Delivery
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
@@ -105,6 +129,7 @@ services:
     env: docker
     dockerFilePath: QuickBite.Notification/Dockerfile
     dockerContext: QuickBite.Notification
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
@@ -118,6 +143,7 @@ services:
     env: docker
     dockerFilePath: QuickBite.Gateway/Dockerfile
     dockerContext: QuickBite.Gateway
+    plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
