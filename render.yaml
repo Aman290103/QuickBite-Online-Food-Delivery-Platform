@@ -1,14 +1,9 @@
-services:
-  # Databases & Cache
-  - type: database
-    name: quickbite-postgres
+databases:
+  - name: quickbite-postgres
     databaseName: quickbite
     user: postgres
 
-  - type: redis
-    name: quickbite-redis
-    ipAllowList: [] # Only allow internal connections
-
+services:
   # Microservices
   - type: web
     name: auth-service
@@ -35,10 +30,6 @@ services:
         fromDatabase:
           name: quickbite-postgres
           property: connectionString
-      - key: ConnectionStrings__Redis
-        fromRedis:
-          name: quickbite-redis
-          property: connectionString
 
   - type: web
     name: menu-service
@@ -52,10 +43,6 @@ services:
         fromDatabase:
           name: quickbite-postgres
           property: connectionString
-      - key: ConnectionStrings__Redis
-        fromRedis:
-          name: quickbite-redis
-          property: connectionString
 
   - type: web
     name: cart-service
@@ -68,10 +55,6 @@ services:
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
           name: quickbite-postgres
-          property: connectionString
-      - key: ConnectionStrings__Redis
-        fromRedis:
-          name: quickbite-redis
           property: connectionString
 
   - type: web
@@ -90,8 +73,6 @@ services:
         value: http://cart-service:8080/
       - key: Services__PaymentUrl
         value: http://payment-service:8080/
-      - key: RabbitMQ__Host
-        value: # You will need an external RabbitMQ provider like CloudAMQP for production
 
   - type: web
     name: payment-service
