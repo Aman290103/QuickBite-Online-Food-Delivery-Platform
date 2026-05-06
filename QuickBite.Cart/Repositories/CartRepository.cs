@@ -21,6 +21,13 @@ namespace QuickBite.Cart.Repositories
                 .FirstOrDefaultAsync(c => c.CustomerId == customerId);
         }
 
+        public async Task<Entities.Cart?> GetCartByIdAsync(Guid cartId)
+        {
+            return await _context.Carts
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.CartId == cartId);
+        }
+
         public async Task<PromoCode?> GetPromoCodeAsync(string code)
         {
             return await _context.PromoCodes

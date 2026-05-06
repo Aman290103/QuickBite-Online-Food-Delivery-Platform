@@ -16,7 +16,9 @@ namespace QuickBite.Restaurant.Repositories
 
         public async Task<Entities.Restaurant?> GetByIdAsync(Guid id)
         {
-            return await _context.Restaurants.FindAsync(id);
+            return await _context.Restaurants
+                .Include(r => r.Reviews)
+                .FirstOrDefaultAsync(r => r.RestaurantId == id);
         }
 
         public async Task<IEnumerable<Entities.Restaurant>> GetAllAsync()
@@ -26,14 +28,17 @@ namespace QuickBite.Restaurant.Repositories
 
         public async Task<IEnumerable<Entities.Restaurant>> SearchByNameAsync(string name)
         {
+            var term = name.ToLower();
             return await _context.Restaurants
-                .Where(r => r.Name.Contains(name) && r.IsApproved)
+                .Include(r => r.Reviews)
+                .Where(r => (r.Name.ToLower().Contains(term) || r.Cuisine.ToLower().Contains(term)) && r.IsApproved)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Entities.Restaurant>> FilterByCuisineAsync(string cuisine)
         {
             return await _context.Restaurants
+                .Include(r => r.Reviews)
                 .Where(r => r.Cuisine.Contains(cuisine) && r.IsApproved)
                 .ToListAsync();
         }
@@ -44,12 +49,9 @@ namespace QuickBite.Restaurant.Repositories
             // For production with massive data, Spatial indexes (PostGIS) are preferred.
             
             var restaurants = await _context.Restaurants
-                .Where(r => r.IsApproved && r.IsOpen)
-                .ToListAsync(); // Pulling into memory for complex Math calculation if SQL translation fails
-
-            return restaurants.Where(r => 
-                CalculateDistance(latitude, longitude, r.Latitude, r.Longitude) <= radiusKm)
-                .OrderBy(r => CalculateDistance(latitude, longitude, r.Latitude, r.Longitude));
+                .Include(r => r.Reviews)
+                .ToListAsync(); 
+            return restaurants;
         }
 
         public async Task AddAsync(Entities.Restaurant restaurant)
@@ -70,6 +72,24 @@ namespace QuickBite.Restaurant.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> ExistsByNameAndAddressAsync(string name, string address)
+        {
+            var normalizedName = name.ToLower().Trim();
+            var normalizedAddress = address.ToLower().Trim();
+            
+            // 1. Check by Name + Address
+            var match = await _context.Restaurants.AnyAsync(r => 
+                r.Name.ToLower().Trim() == normalizedName && 
+                r.Address.ToLower().Trim() == normalizedAddress);
+            
+            return match;
+        }
+
+        public async Task<bool> ExistsByPlaceIdAsync(string placeId)
+        {
+            return await _context.Restaurants.AnyAsync(r => r.PlaceId == placeId);
+        }
+
         // --- Review Methods ---
 
         public async Task AddReviewAsync(RestaurantReview review)
@@ -80,7 +100,7 @@ namespace QuickBite.Restaurant.Repositories
         public async Task<IEnumerable<RestaurantReview>> GetReviewsByRestaurantIdAsync(Guid restaurantId, int page, int pageSize)
         {
             return await _context.Reviews
-                .Where(r => r.RestaurantId == restaurantId && r.IsVerified)
+                .Where(r => r.RestaurantId == restaurantId)
                 .OrderByDescending(r => r.ReviewDate)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -95,12 +115,17 @@ namespace QuickBite.Restaurant.Repositories
         public async Task<double> GetAvgFoodRatingAsync(Guid restaurantId)
         {
             var ratings = await _context.Reviews
-                .Where(r => r.RestaurantId == restaurantId && r.IsVerified)
+                .Where(r => r.RestaurantId == restaurantId)
                 .Select(r => r.FoodRating)
                 .ToListAsync();
 
             if (!ratings.Any()) return 0;
             return ratings.Average();
+        }
+
+        public async Task<int> GetReviewCountAsync(Guid restaurantId)
+        {
+            return await _context.Reviews.CountAsync(r => r.RestaurantId == restaurantId);
         }
 
         public async Task<RestaurantReview?> GetReviewByIdAsync(Guid reviewId)

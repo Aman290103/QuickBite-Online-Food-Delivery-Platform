@@ -34,6 +34,11 @@ namespace QuickBite.Auth.Services
                 throw new Exception("Email already registered.");
             }
 
+            if (!Enum.TryParse<UserRole>(registerDto.Role, true, out var userRole))
+            {
+                userRole = UserRole.CUSTOMER;
+            }
+            
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -41,7 +46,7 @@ namespace QuickBite.Auth.Services
                 Email = registerDto.Email,
                 UserName = registerDto.Email,
                 PhoneNumber = registerDto.Phone,
-                Role = registerDto.Role,
+                Role = userRole,
                 Provider = AuthProvider.LOCAL,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
@@ -219,6 +224,7 @@ namespace QuickBite.Auth.Services
         private ProfileDto MapToProfileDto(User user)
         {
             return new ProfileDto(
+                user.Id,
                 user.FullName,
                 user.Email!,
                 user.PhoneNumber!,

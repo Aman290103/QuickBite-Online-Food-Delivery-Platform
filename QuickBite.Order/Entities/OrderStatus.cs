@@ -5,6 +5,7 @@ namespace QuickBite.Order.Entities
         PLACED,
         CONFIRMED,
         PREPARING,
+        READY,
         PICKED_UP,
         DELIVERED,
         CANCELLED

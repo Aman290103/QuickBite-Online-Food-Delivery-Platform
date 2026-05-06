@@ -5,6 +5,7 @@ namespace QuickBite.Cart.Interfaces
     public interface ICartRepository
     {
         Task<Entities.Cart?> GetCartByCustomerIdAsync(Guid customerId);
+        Task<Entities.Cart?> GetCartByIdAsync(Guid cartId);
         Task<PromoCode?> GetPromoCodeAsync(string code);
         
         Task AddCartAsync(Entities.Cart cart);

@@ -99,4 +99,22 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+// --- Database Migration & Seeding ---
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<MenuDbContext>();
+        context.Database.Migrate();
+
+        // App now uses /api/v1/menu/seed for data population
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating or seeding the database.");
+    }
+}
+
 app.Run();

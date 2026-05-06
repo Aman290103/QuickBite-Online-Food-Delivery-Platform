@@ -8,6 +8,8 @@ namespace QuickBite.Order.Entities
         public Guid OrderId { get; set; }
         public Guid CustomerId { get; set; }
         public Guid RestaurantId { get; set; }
+        public string RestaurantName { get; set; } = "Restaurant";
+        public string OrderNumber { get; set; } = string.Empty;
         public Guid? DeliveryAgentId { get; set; }
         
         public decimal TotalAmount { get; set; }

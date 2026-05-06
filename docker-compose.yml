@@ -1,0 +1,202 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: quickbite-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=aman@2901
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: quickbite-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  redis:
+    image: redis:latest
+    container_name: quickbite-redis
+    ports:
+      - "6379:6379"
+
+  auth-service:
+    build:
+      context: ./QuickBite.Auth
+      dockerfile: Dockerfile
+    container_name: auth-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=quickbite_auth;Username=postgres;Password=aman@2901
+      - Jwt__Key=SuperSecretKeyForQuickBiteAuthService_DoNotUseInProduction_MustBeLongEnough
+      - Jwt__Issuer=QuickBite.Auth
+      - Jwt__Audience=QuickBite.Users
+    ports:
+      - "5001:8080"
+    depends_on:
+      - postgres
+
+  restaurant-service:
+    build:
+      context: ./QuickBite.Restaurant
+      dockerfile: Dockerfile
+    container_name: restaurant-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=quickbite_restaurant;Username=postgres;Password=aman@2901
+      - ConnectionStrings__Redis=redis:6379
+      - Jwt__Key=SuperSecretKeyForQuickBiteAuthService_DoNotUseInProduction_MustBeLongEnough
+      - Jwt__Issuer=QuickBite.Auth
+      - Jwt__Audience=QuickBite.Users
+    ports:
+      - "5002:8080"
+    depends_on:
+      - postgres
+      - redis
+
+  menu-service:
+    build:
+      context: ./QuickBite.Menu
+      dockerfile: Dockerfile
+    container_name: menu-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=quickbite_menu;Username=postgres;Password=aman@2901
+      - ConnectionStrings__Redis=redis:6379
+      - Jwt__Key=SuperSecretKeyForQuickBiteAuthService_DoNotUseInProduction_MustBeLongEnough
+      - Jwt__Issuer=QuickBite.Auth
+      - Jwt__Audience=QuickBite.Users
+    ports:
+      - "5003:8080"
+    depends_on:
+      - postgres
+      - redis
+
+  cart-service:
+    build:
+      context: ./QuickBite.Cart
+      dockerfile: Dockerfile
+    container_name: cart-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=quickbite_cart;Username=postgres;Password=aman@2901
+      - ConnectionStrings__Redis=redis:6379
+      - Jwt__Key=SuperSecretKeyForQuickBiteAuthService_DoNotUseInProduction_MustBeLongEnough
+      - Jwt__Issuer=QuickBite.Auth
+      - Jwt__Audience=QuickBite.Users
+    ports:
+      - "5004:8080"
+    depends_on:
+      - postgres
+      - redis
+
+  order-service:
+    build:
+      context: ./QuickBite.Order
+      dockerfile: Dockerfile
+    container_name: order-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=quickbite_order;Username=postgres;Password=aman@2901
+      - RabbitMQ__Host=rabbitmq
+      - Services__CartUrl=http://cart-service:8080/
+      - Services__PaymentUrl=http://payment-service:8080/
+      - Jwt__Key=SuperSecretKeyForQuickBiteAuthService_DoNotUseInProduction_MustBeLongEnough
+      - Jwt__Issuer=QuickBite.Auth
+      - Jwt__Audience=QuickBite.Users
+    ports:
+      - "5005:8080"
+    depends_on:
+      - postgres
+      - rabbitmq
+      - cart-service
+
+  payment-service:
+    build:
+      context: ./QuickBite.Payment
+      dockerfile: Dockerfile
+    container_name: payment-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=quickbite_payment;Username=postgres;Password=aman@2901
+      - Jwt__Key=SuperSecretKeyForQuickBiteAuthService_DoNotUseInProduction_MustBeLongEnough
+      - Jwt__Issuer=QuickBite.Auth
+      - Jwt__Audience=QuickBite.Users
+    ports:
+      - "5006:8080"
+    depends_on:
+      - postgres
+
+  delivery-service:
+    build:
+      context: ./QuickBite.Delivery
+      dockerfile: Dockerfile
+    container_name: delivery-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=quickbite_delivery;Username=postgres;Password=aman@2901
+      - ConnectionStrings__Redis=redis:6379
+      - Jwt__Key=SuperSecretKeyForQuickBiteAuthService_DoNotUseInProduction_MustBeLongEnough
+      - Jwt__Issuer=QuickBite.Auth
+      - Jwt__Audience=QuickBite.Users
+    ports:
+      - "5007:8080"
+    depends_on:
+      - postgres
+      - redis
+
+  notification-service:
+    build:
+      context: ./QuickBite.Notification
+      dockerfile: Dockerfile
+    container_name: notification-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=quickbite_notification;Username=postgres;Password=aman@2901
+      - ConnectionStrings__Redis=redis:6379
+      - RabbitMQ__Host=rabbitmq
+      - Jwt__Key=SuperSecretKeyForQuickBiteAuthService_DoNotUseInProduction_MustBeLongEnough
+      - Jwt__Issuer=QuickBite.Auth
+      - Jwt__Audience=QuickBite.Users
+    ports:
+      - "5009:8080"
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+
+  gateway-service:
+    build:
+      context: ./QuickBite.Gateway
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Jwt__Key=SuperSecretKeyForQuickBiteAuthService_DoNotUseInProduction_MustBeLongEnough
+      - Jwt__Issuer=QuickBite.Auth
+      - Jwt__Audience=QuickBite.Users
+      - ReverseProxy__Clusters__auth-cluster__Destinations__destination1__Address=http://auth-service:8080/
+      - ReverseProxy__Clusters__restaurant-cluster__Destinations__destination1__Address=http://restaurant-service:8080/
+      - ReverseProxy__Clusters__menu-cluster__Destinations__destination1__Address=http://menu-service:8080/
+      - ReverseProxy__Clusters__cart-cluster__Destinations__destination1__Address=http://cart-service:8080/
+      - ReverseProxy__Clusters__order-cluster__Destinations__destination1__Address=http://order-service:8080/
+      - ReverseProxy__Clusters__payment-cluster__Destinations__destination1__Address=http://payment-service:8080/
+      - ReverseProxy__Clusters__delivery-cluster__Destinations__destination1__Address=http://delivery-service:8080/
+      - ReverseProxy__Clusters__notification-cluster__Destinations__destination1__Address=http://notification-service:8080/
+    ports:
+      - "5000:8080"
+    depends_on:
+      - auth-service
+      - restaurant-service
+      - menu-service
+      - cart-service
+      - order-service
+      - payment-service
+      - delivery-service
+      - notification-service
+
+volumes:
+  postgres_data:

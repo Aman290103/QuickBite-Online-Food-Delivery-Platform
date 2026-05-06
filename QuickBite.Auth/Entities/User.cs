@@ -4,10 +4,10 @@ namespace QuickBite.Auth.Entities
 {
     public enum UserRole
     {
-        CUSTOMER,
-        OWNER,
-        AGENT,
-        ADMIN
+        CUSTOMER = 0,
+        OWNER = 1,
+        DELIVERY_AGENT = 2,
+        ADMIN = 3
     }
 
     public enum AuthProvider

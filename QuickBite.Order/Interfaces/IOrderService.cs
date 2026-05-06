@@ -14,6 +14,9 @@ namespace QuickBite.Order.Interfaces
         Task<OrderResponseDto> UpdateStatusAsync(Guid orderId, OrderStatus newStatus, string actorRole);
         Task<OrderResponseDto> CancelOrderAsync(Guid orderId, Guid customerId);
         Task<OrderResponseDto> ReorderAsync(Guid pastOrderId, Guid customerId);
+        Task<IEnumerable<OrderResponseDto>> GetAgentOrdersAsync(Guid agentId);
         Task<OrderResponseDto> AssignAgentAsync(Guid orderId, Guid agentId);
+        Task<RestaurantStatsDto> GetRestaurantStatsAsync(Guid restaurantId);
+        Task SeedRestaurantOrdersAsync(Guid restaurantId, int count);
     }
 }

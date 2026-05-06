@@ -113,6 +113,7 @@ namespace QuickBite.Menu.Services
                 DiscountedPrice = dto.DiscountedPrice,
                 IsVeg = dto.IsVeg,
                 Calories = dto.Calories,
+                ImageUrl = dto.ImageUrl,
                 Tags = string.Join(",", dto.Tags),
                 IsAvailable = true
             };
@@ -134,6 +135,7 @@ namespace QuickBite.Menu.Services
             item.DiscountedPrice = dto.DiscountedPrice;
             item.IsVeg = dto.IsVeg;
             item.Calories = dto.Calories;
+            item.ImageUrl = dto.ImageUrl;
             item.Tags = string.Join(",", dto.Tags);
 
             await _repository.UpdateMenuItemAsync(item);

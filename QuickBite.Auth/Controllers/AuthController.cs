@@ -18,11 +18,11 @@ namespace QuickBite.Auth.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
             try
             {
-                var user = await _authService.RegisterAsync(registerDto);
+                var user = await _authService.RegisterAsync(dto);
                 return CreatedAtAction(nameof(GetProfile), new { }, new { Message = "User registered successfully", UserId = user.Id });
             }
             catch (Exception ex)
@@ -32,11 +32,11 @@ namespace QuickBite.Auth.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             try
             {
-                var tokens = await _authService.LoginAsync(loginDto);
+                var tokens = await _authService.LoginAsync(dto);
                 return Ok(tokens);
             }
             catch (UnauthorizedAccessException ex)
@@ -50,11 +50,11 @@ namespace QuickBite.Auth.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] TokenDto tokenDto)
+        public async Task<IActionResult> Refresh([FromBody] TokenDto dto)
         {
             try
             {
-                var tokens = await _authService.RefreshTokenAsync(tokenDto.AccessToken, tokenDto.RefreshToken);
+                var tokens = await _authService.RefreshTokenAsync(dto.AccessToken, dto.RefreshToken);
                 return Ok(tokens);
             }
             catch (UnauthorizedAccessException ex)

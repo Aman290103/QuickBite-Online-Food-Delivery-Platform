@@ -85,6 +85,11 @@ namespace QuickBite.Payment.Repositories
             return await _context.Database.BeginTransactionAsync();
         }
 
+        public IExecutionStrategy CreateExecutionStrategy()
+        {
+            return _context.Database.CreateExecutionStrategy();
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
