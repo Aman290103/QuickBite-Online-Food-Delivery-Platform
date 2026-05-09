@@ -115,12 +115,12 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<DeliveryDbContext>();
         context.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
-    }
+
+        if (!context.Agents.Any())
+        {
+            context.Agents.Add(new QuickBite.Delivery.Entities.DeliveryAgent { AgentId = Guid.NewGuid(), FullName = "Rahul Sharma", Phone = "9876543210", Email = "rahul@quickbite.com", VehicleType = "Bike", Status = QuickBite.Delivery.Entities.AgentStatus.Available, IsApproved = true, CurrentLatitude = 27.4924, CurrentLongitude = 77.6737, Rating = 4.8 });
+            context.SaveChanges();
+        }
 }
 
 if (app.Environment.IsDevelopment())

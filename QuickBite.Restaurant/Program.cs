@@ -10,7 +10,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- Database Configuration (PostgreSQL/SQL Server Hybrid) ---
+// --- Database Configuration (Surgical Fix) ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<RestaurantDbContext>(options =>
 {
@@ -21,37 +21,33 @@ builder.Services.AddDbContext<RestaurantDbContext>(options =>
         connUrl = connUrl.Replace("postgres://", "");
         var userPassSide = connUrl.Split('@')[0];
         var hostDbSide = connUrl.Split('@')[1];
-        
         var user = userPassSide.Split(':')[0];
         var pass = userPassSide.Split(':')[1];
         var hostSide = hostDbSide.Split('/')[0];
         var db = hostDbSide.Split('/')[1].Split('?')[0];
         var host = hostSide.Split(':')[0];
         var port = hostSide.Contains(":") ? hostSide.Split(':')[1] : "5432";
-        
         connUrl = $"Host={host};Port={port};Database={db};Username={user};Password={pass};SSL Mode=Require;Trust Server Certificate=true";
     }
 
     if (connUrl != null && connUrl.Contains("Host="))
     {
-        options.UseNpgsql(connUrl, npgsqlOptions => 
-            npgsqlOptions.EnableRetryOnFailure());
+        options.UseNpgsql(connUrl, npgsqlOptions => npgsqlOptions.EnableRetryOnFailure());
     }
     else
     {
-        options.UseSqlServer(connectionString!, sqlOptions => 
-            sqlOptions.EnableRetryOnFailure());
+        options.UseSqlServer(connectionString!, sqlOptions => sqlOptions.EnableRetryOnFailure());
     }
 });
 
-// --- Redis Cache Configuration ---
+// --- Redis ---
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
     options.InstanceName = "QuickBite_";
 });
 
-// --- Authentication Configuration ---
+// --- Auth ---
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -67,7 +63,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 
-// --- Dependency Injection ---
+// --- DI ---
 builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddHttpClient<IGooglePlacesService, GooglePlacesService>();
@@ -75,7 +71,6 @@ builder.Services.AddHttpClient<IGooglePlacesService, GooglePlacesService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// --- Swagger Configuration ---
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "QuickBite.Restaurant API", Version = "v1" });
@@ -98,23 +93,12 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// --- Middleware ---
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "QuickBite.Restaurant API V1");
-        c.RoutePrefix = string.Empty;
-    });
-}
-
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// --- Database Migration & Seeding ---
+// --- Automatic Seeding (Restoring Your Data) ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -129,99 +113,35 @@ using (var scope = app.Services.CreateScope())
             {
                 new QuickBite.Restaurant.Entities.Restaurant
                 {
-                    RestaurantId = Guid.Parse("550e8400-e29b-41d4-a716-446655440010"),
+                    RestaurantId = Guid.Parse("770e8400-e29b-41d4-a716-446655440020"),
                     OwnerId = Guid.NewGuid(),
-                    Name = "Pizza Palace",
-                    Cuisine = "Pizza, Italian",
-                    Address = "CP, Block A",
-                    City = "New Delhi",
-                    Latitude = 28.6139,
-                    Longitude = 77.2090,
-                    AvgRating = 4.5,
-                    IsOpen = true,
-                    IsApproved = true,
-                    EstimatedDeliveryMin = 30,
-                    ImageUrl = "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800"
-                },
-                new QuickBite.Restaurant.Entities.Restaurant
-                {
-                    RestaurantId = Guid.Parse("550e8400-e29b-41d4-a716-446655440011"),
-                    OwnerId = Guid.NewGuid(),
-                    Name = "Burger Town",
-                    Cuisine = "Burgers, Fast Food",
-                    Address = "Saket District Center",
-                    City = "New Delhi",
-                    Latitude = 28.5244,
-                    Longitude = 77.2167,
-                    AvgRating = 4.3,
-                    IsOpen = true,
-                    IsApproved = true,
-                    EstimatedDeliveryMin = 25,
-                    ImageUrl = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800"
-                },
-                new QuickBite.Restaurant.Entities.Restaurant
-                {
-                    RestaurantId = Guid.Parse("550e8400-e29b-41d4-a716-446655440012"),
-                    OwnerId = Guid.NewGuid(),
-                    Name = "Royal Biryani House",
-                    Cuisine = "Biryani, Mughlai",
-                    Address = "Jama Masjid Area",
-                    City = "New Delhi",
-                    Latitude = 28.6507,
-                    Longitude = 77.2334,
-                    AvgRating = 4.8,
-                    IsOpen = true,
-                    IsApproved = true,
-                    EstimatedDeliveryMin = 45,
-                    ImageUrl = "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?w=800"
-                },
-                new QuickBite.Restaurant.Entities.Restaurant
-                {
-                    RestaurantId = Guid.Parse("550e8400-e29b-41d4-a716-446655440013"),
-                    OwnerId = Guid.NewGuid(),
-                    Name = "Grand Indian Thali",
-                    Cuisine = "North Indian, Thali",
-                    Address = "Rajouri Garden",
-                    City = "New Delhi",
-                    Latitude = 28.6415,
-                    Longitude = 77.1209,
-                    AvgRating = 4.6,
-                    IsOpen = true,
-                    IsApproved = true,
-                    EstimatedDeliveryMin = 40,
-                    ImageUrl = "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800"
-                },
-                new QuickBite.Restaurant.Entities.Restaurant
-                {
-                    RestaurantId = Guid.Parse("550e8400-e29b-41d4-a716-446655440014"),
-                    OwnerId = Guid.NewGuid(),
-                    Name = "Sweet Cravings",
-                    Cuisine = "Desserts, Bakery",
-                    Address = "Hauz Khas Village",
-                    City = "New Delhi",
-                    Latitude = 28.5528,
-                    Longitude = 77.1903,
+                    Name = "Brijwasi Mithai Wala",
+                    Cuisine = "Sweets, Veg North Indian",
+                    Address = "Holi Gate",
+                    City = "Mathura",
+                    Latitude = 27.4924,
+                    Longitude = 77.6737,
                     AvgRating = 4.9,
                     IsOpen = true,
                     IsApproved = true,
                     EstimatedDeliveryMin = 20,
-                    ImageUrl = "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800"
+                    ImageUrl = "https://images.unsplash.com/photo-1589113103503-49ef83d89e7c?w=800"
                 },
                 new QuickBite.Restaurant.Entities.Restaurant
                 {
-                    RestaurantId = Guid.Parse("550e8400-e29b-41d4-a716-446655440015"),
+                    RestaurantId = Guid.Parse("770e8400-e29b-41d4-a716-446655440021"),
                     OwnerId = Guid.NewGuid(),
-                    Name = "The Health Hub",
-                    Cuisine = "Healthy Food, Salads",
-                    Address = "Cyber Hub",
-                    City = "Gurugram",
-                    Latitude = 28.4951,
-                    Longitude = 77.0878,
+                    Name = "Shankar Mithai Wala",
+                    Cuisine = "North Indian, Pure Veg",
+                    Address = "Krishna Nagar",
+                    City = "Mathura",
+                    Latitude = 27.5010,
+                    Longitude = 77.6690,
                     AvgRating = 4.7,
                     IsOpen = true,
                     IsApproved = true,
-                    EstimatedDeliveryMin = 35,
-                    ImageUrl = "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800"
+                    EstimatedDeliveryMin = 25,
+                    ImageUrl = "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800"
                 }
             });
             context.SaveChanges();
@@ -230,7 +150,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating or seeding the database.");
+        logger.LogError(ex, "An error occurred while seeding the database.");
     }
 }
 

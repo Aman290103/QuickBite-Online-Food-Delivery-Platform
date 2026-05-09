@@ -126,7 +126,19 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<MenuDbContext>();
         context.Database.Migrate();
 
-        // App now uses /api/v1/menu/seed for data population
+        if (!context.Categories.Any())
+        {
+            var res1Id = Guid.Parse("770e8400-e29b-41d4-a716-446655440020");
+            var cat1 = new QuickBite.Menu.Entities.MenuCategory { CategoryId = Guid.NewGuid(), RestaurantId = res1Id, Name = "Sweets", Description = "Authentic Mathura Sweets" };
+            context.Categories.Add(cat1);
+            context.MenuItems.Add(new QuickBite.Menu.Entities.MenuItem { ItemId = Guid.NewGuid(), RestaurantId = res1Id, CategoryId = cat1.CategoryId, Name = "Mathura Peda", Description = "The famous Mathura Peda", Price = 250, IsVeg = true, ImageUrl = "https://images.unsplash.com/photo-1589113103503-49ef83d89e7c?w=400" });
+
+            var res2Id = Guid.Parse("770e8400-e29b-41d4-a716-446655440021");
+            var cat2 = new QuickBite.Menu.Entities.MenuCategory { CategoryId = Guid.NewGuid(), RestaurantId = res2Id, Name = "Main Course", Description = "Pure Veg North Indian" };
+            context.Categories.Add(cat2);
+            context.MenuItems.Add(new QuickBite.Menu.Entities.MenuItem { ItemId = Guid.NewGuid(), RestaurantId = res2Id, CategoryId = cat2.CategoryId, Name = "Paneer Butter Masala", Description = "Creamy cottage cheese curry", Price = 320, IsVeg = true, ImageUrl = "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400" });
+            context.SaveChanges();
+        }
     }
     catch (Exception ex)
     {
