@@ -17,14 +17,32 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AuthDbContext>(options =>
 {
-    if (connectionString!.Contains("Host="))
+    var connUrl = connectionString;
+    if (connUrl != null && (connUrl.StartsWith("postgres://") || connUrl.StartsWith("postgresql://")))
     {
-        options.UseNpgsql(connectionString, npgsqlOptions => 
+        connUrl = connUrl.Replace("postgresql://", "postgres://");
+        connUrl = connUrl.Replace("postgres://", "");
+        var userPassSide = connUrl.Split('@')[0];
+        var hostDbSide = connUrl.Split('@')[1];
+        
+        var user = userPassSide.Split(':')[0];
+        var pass = userPassSide.Split(':')[1];
+        var hostSide = hostDbSide.Split('/')[0];
+        var db = hostDbSide.Split('/')[1].Split('?')[0];
+        var host = hostSide.Split(':')[0];
+        var port = hostSide.Contains(":") ? hostSide.Split(':')[1] : "5432";
+        
+        connUrl = $"Host={host};Port={port};Database={db};Username={user};Password={pass};SSL Mode=Require;Trust Server Certificate=true";
+    }
+
+    if (connUrl != null && connUrl.Contains("Host="))
+    {
+        options.UseNpgsql(connUrl, npgsqlOptions => 
             npgsqlOptions.EnableRetryOnFailure());
     }
     else
     {
-        options.UseSqlServer(connectionString, sqlOptions => 
+        options.UseSqlServer(connectionString!, sqlOptions => 
             sqlOptions.EnableRetryOnFailure());
     }
 });
