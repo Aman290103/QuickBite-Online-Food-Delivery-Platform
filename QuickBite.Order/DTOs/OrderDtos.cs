@@ -6,7 +6,8 @@ namespace QuickBite.Order.DTOs
     public record PlaceOrderDto(
         [Required] string ModeOfPayment, // COD, ONLINE
         [Required] string DeliveryAddress,
-        string? SpecialInstructions
+        string? SpecialInstructions,
+        string? PromoCode
     );
 
     public record OrderItemDto(

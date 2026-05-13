@@ -244,8 +244,20 @@ namespace QuickBite.Payment.Services
             var wallet = await _repository.GetWalletByCustomerIdAsync(customerId);
             if (wallet == null)
             {
-                wallet = new Wallet { WalletId = Guid.NewGuid(), CustomerId = customerId, Balance = 0 };
+                // SEEDING: Give 10,000 INR to new users automatically for testing
+                wallet = new Wallet { WalletId = Guid.NewGuid(), CustomerId = customerId, Balance = 10000 };
                 await _repository.AddWalletAsync(wallet);
+                await _repository.SaveChangesAsync();
+
+                await _repository.AddWalletStatementAsync(new WalletStatement
+                {
+                    StatementId = Guid.NewGuid(),
+                    WalletId = wallet.WalletId,
+                    Type = "CREDIT",
+                    Amount = 10000,
+                    Description = "Welcome Bonus",
+                    TransactionRef = "WELCOME_2026"
+                });
                 await _repository.SaveChangesAsync();
             }
             return wallet;

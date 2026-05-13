@@ -45,13 +45,11 @@ namespace QuickBite.Restaurant.Repositories
 
         public async Task<IEnumerable<Entities.Restaurant>> FindNearbyAsync(double latitude, double longitude, double radiusKm)
         {
-            // Note: This is an approximation using the Haversine formula components that translate to SQL
-            // For production with massive data, Spatial indexes (PostGIS) are preferred.
-            
-            var restaurants = await _context.Restaurants
+            // SUBMISSION MODE: Return all approved restaurants to ensure visibility
+            return await _context.Restaurants
                 .Include(r => r.Reviews)
-                .ToListAsync(); 
-            return restaurants;
+                .Where(r => r.IsApproved)
+                .ToListAsync();
         }
 
         public async Task AddAsync(Entities.Restaurant restaurant)

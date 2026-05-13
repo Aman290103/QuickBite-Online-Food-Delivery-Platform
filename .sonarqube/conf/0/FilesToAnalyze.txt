@@ -1,0 +1,9 @@
+﻿F:\demo\QuickBite\QuickBite.Gateway\Program.cs
+F:\demo\QuickBite\QuickBite.Gateway\obj\Debug\net8.0\QuickBite.Gateway.GlobalUsings.g.cs
+F:\demo\QuickBite\QuickBite.Gateway\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+F:\demo\QuickBite\QuickBite.Gateway\obj\Debug\net8.0\QuickBite.Gateway.AssemblyInfo.cs
+F:\demo\QuickBite\QuickBite.Gateway\obj\Debug\net8.0\QuickBite.Gateway.MvcApplicationPartsAssemblyInfo.cs
+F:\demo\QuickBite\QuickBite.Gateway\appsettings.Development.json
+F:\demo\QuickBite\QuickBite.Gateway\appsettings.json
+F:\demo\QuickBite\QuickBite.Gateway\Dockerfile
+F:\demo\QuickBite\QuickBite.Gateway\Properties\launchSettings.json

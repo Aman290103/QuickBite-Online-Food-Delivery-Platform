@@ -60,6 +60,12 @@ namespace QuickBite.Order.Services
             // 2. Validate Restaurant Id and Total
             Guid restaurantId = cart.RestaurantId;
             decimal totalAmount = cart.GrandTotal;
+            decimal finalAmount = totalAmount;
+
+            if (!string.IsNullOrEmpty(dto.PromoCode) && dto.PromoCode.Equals("QUICK20", StringComparison.OrdinalIgnoreCase))
+            {
+                finalAmount = Math.Round(totalAmount * 0.8m, 2);
+            }
             
             // 3. Create Order Entity
             var order = new Entities.Order
@@ -69,8 +75,8 @@ namespace QuickBite.Order.Services
                 CustomerId = customerId,
                 RestaurantId = restaurantId,
                 RestaurantName = cart.RestaurantName,
-                TotalAmount = totalAmount,
-                FinalAmount = totalAmount, // For now, ignoring complexity
+                TotalAmount = finalAmount,
+                FinalAmount = finalAmount,
                 ModeOfPayment = dto.ModeOfPayment,
                 Status = OrderStatus.PLACED,
                 DeliveryAddress = dto.DeliveryAddress,
@@ -250,6 +256,8 @@ namespace QuickBite.Order.Services
 
         private void ValidateStatusTransition(OrderStatus current, OrderStatus next, string role)
         {
+            if (role == "ADMIN") return; // Admin can force any status
+
             bool isValid = (current, next) switch
             {
                 (OrderStatus.PLACED, OrderStatus.CONFIRMED) when role == "OWNER" || role == "ADMIN" => true,

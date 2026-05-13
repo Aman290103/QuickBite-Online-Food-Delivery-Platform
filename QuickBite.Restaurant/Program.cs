@@ -66,7 +66,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // --- DI ---
 builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
-builder.Services.AddHttpClient<IGooglePlacesService, GooglePlacesService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -98,7 +97,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// --- Automatic Seeding (Restoring Your Data) ---
+// --- MEGA SEED: Mathura Hub ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -107,45 +106,78 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<RestaurantDbContext>();
         context.Database.Migrate();
 
-        if (!context.Restaurants.Any())
+        var seeds = new List<QuickBite.Restaurant.Entities.Restaurant>
         {
-            context.Restaurants.AddRange(new List<QuickBite.Restaurant.Entities.Restaurant>
+            new QuickBite.Restaurant.Entities.Restaurant
             {
-                new QuickBite.Restaurant.Entities.Restaurant
-                {
-                    RestaurantId = Guid.Parse("770e8400-e29b-41d4-a716-446655440020"),
-                    OwnerId = Guid.NewGuid(),
-                    Name = "Brijwasi Mithai Wala",
-                    Cuisine = "Sweets, Veg North Indian",
-                    Address = "Holi Gate",
-                    City = "Mathura",
-                    Latitude = 27.4924,
-                    Longitude = 77.6737,
-                    AvgRating = 4.9,
-                    IsOpen = true,
-                    IsApproved = true,
-                    EstimatedDeliveryMin = 20,
-                    ImageUrl = "https://images.unsplash.com/photo-1589113103503-49ef83d89e7c?w=800"
-                },
-                new QuickBite.Restaurant.Entities.Restaurant
-                {
-                    RestaurantId = Guid.Parse("770e8400-e29b-41d4-a716-446655440021"),
-                    OwnerId = Guid.NewGuid(),
-                    Name = "Shankar Mithai Wala",
-                    Cuisine = "North Indian, Pure Veg",
-                    Address = "Krishna Nagar",
-                    City = "Mathura",
-                    Latitude = 27.5010,
-                    Longitude = 77.6690,
-                    AvgRating = 4.7,
-                    IsOpen = true,
-                    IsApproved = true,
-                    EstimatedDeliveryMin = 25,
-                    ImageUrl = "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800"
-                }
-            });
-            context.SaveChanges();
+                RestaurantId = Guid.Parse("770e8400-e29b-41d4-a716-446655440020"),
+                OwnerId = Guid.NewGuid(),
+                Name = "Brijwasi Mithai Wala",
+                Cuisine = "Sweets, Indian, Veg",
+                Address = "Holi Gate",
+                City = "Mathura",
+                Latitude = 27.4924,
+                Longitude = 77.6737,
+                AvgRating = 4.9,
+                IsOpen = true,
+                IsApproved = true,
+                ImageUrl = "https://images.unsplash.com/photo-1589113103503-49ef83d89e7c?w=800"
+            },
+            new QuickBite.Restaurant.Entities.Restaurant
+            {
+                RestaurantId = Guid.Parse("770e8400-e29b-41d4-a716-446655440021"),
+                OwnerId = Guid.NewGuid(),
+                Name = "Shankar Mithai Wala",
+                Cuisine = "North Indian, Pure Veg",
+                Address = "Krishna Nagar",
+                City = "Mathura",
+                Latitude = 27.5010,
+                Longitude = 77.6690,
+                AvgRating = 4.7,
+                IsOpen = true,
+                IsApproved = true,
+                ImageUrl = "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800"
+            },
+            new QuickBite.Restaurant.Entities.Restaurant
+            {
+                RestaurantId = Guid.Parse("770e8400-e29b-41d4-a716-446655440022"),
+                OwnerId = Guid.NewGuid(),
+                Name = "Pizza Hut",
+                Cuisine = "Pizza, Fast Food, Veg",
+                Address = "Highway Plaza",
+                City = "Mathura",
+                Latitude = 27.4800,
+                Longitude = 77.6700,
+                AvgRating = 4.5,
+                IsOpen = true,
+                IsApproved = true,
+                ImageUrl = "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800"
+            },
+            new QuickBite.Restaurant.Entities.Restaurant
+            {
+                RestaurantId = Guid.NewGuid(),
+                OwnerId = Guid.NewGuid(),
+                Name = "Haldiram's",
+                Cuisine = "Snacks, Indian, Veg",
+                Address = "Connaught Place",
+                City = "Delhi",
+                Latitude = 28.6315,
+                Longitude = 77.2167,
+                AvgRating = 4.8,
+                IsOpen = true,
+                IsApproved = true,
+                ImageUrl = "https://images.unsplash.com/photo-1589647363585-f4a7d3877b10?w=800"
+            }
+        };
+
+        foreach (var r in seeds)
+        {
+            if (!context.Restaurants.Any(res => res.RestaurantId == r.RestaurantId))
+            {
+                context.Restaurants.Add(r);
+            }
         }
+        context.SaveChanges();
     }
     catch (Exception ex)
     {

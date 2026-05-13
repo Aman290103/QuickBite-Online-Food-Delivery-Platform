@@ -1,0 +1,89 @@
+{
+  "info": {
+    "name": "QuickBite Microservices",
+    "description": "Postman Collection for QuickBite API Gateway and Microservices",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth Service",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "http://localhost:8080/api/v1/auth/register", "host": [ "http://localhost:8080" ], "path": [ "api", "v1", "auth", "register" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"Password123!\",\n  \"fullName\": \"Test User\",\n  \"role\": \"CUSTOMER\"\n}" }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "http://localhost:8080/api/v1/auth/login", "host": [ "http://localhost:8080" ], "path": [ "api", "v1", "auth", "login" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"Password123!\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restaurant Service",
+      "item": [
+        {
+          "name": "Get All Restaurants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:8080/api/v1/restaurants", "host": [ "http://localhost:8080" ], "path": [ "api", "v1", "restaurants" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu Service",
+      "item": [
+        {
+          "name": "Get Menu by Restaurant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:8080/api/v1/menus/restaurant/{{restaurantId}}", "host": [ "http://localhost:8080" ], "path": [ "api", "v1", "menus", "restaurant", "{{restaurantId}}" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart Service",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ],
+            "url": { "raw": "http://localhost:8080/api/v1/cart", "host": [ "http://localhost:8080" ], "path": [ "api", "v1", "cart" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Order Service",
+      "item": [
+        {
+          "name": "Place Order",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer {{jwt_token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "http://localhost:8080/api/v1/orders", "host": [ "http://localhost:8080" ], "path": [ "api", "v1", "orders" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"modeOfPayment\": \"ONLINE\",\n  \"deliveryAddress\": \"123 Main St\",\n  \"promoCode\": \"QUICK20\"\n}" }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "jwt_token", "value": "your_token_here" },
+    { "key": "restaurantId", "value": "uuid_here" }
+  ]
+}

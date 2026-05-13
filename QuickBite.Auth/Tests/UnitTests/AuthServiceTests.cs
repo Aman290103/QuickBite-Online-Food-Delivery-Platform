@@ -26,7 +26,7 @@ namespace QuickBite.Auth.Tests.UnitTests
             
             // Set up UserManager Mock
             var store = new Mock<IUserStore<User>>();
-            _userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            _userManagerMock = new Mock<UserManager<User>>(store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
             
             _configMock = new Mock<IConfiguration>();
             
@@ -41,7 +41,7 @@ namespace QuickBite.Auth.Tests.UnitTests
         public async Task RegisterAsync_ShouldThrow_WhenEmailExists()
         {
             // Arrange
-            var registerDto = new RegisterDto("John Doe", "test@test.com", "Password123!", "+91 9999988888", UserRole.CUSTOMER);
+            var registerDto = new RegisterDto { FullName = "John Doe", Email = "test@test.com", Password = "Password123!", Phone = "+91 9999988888", Role = "CUSTOMER" };
             _userRepoMock.Setup(repo => repo.ExistsByEmailAsync(registerDto.Email)).ReturnsAsync(true);
 
             // Act
@@ -55,7 +55,7 @@ namespace QuickBite.Auth.Tests.UnitTests
         public async Task RegisterAsync_ShouldCreateUser_WhenValid()
         {
             // Arrange
-            var registerDto = new RegisterDto("John Doe", "test@test.com", "Password123!", "+91 9999988888", UserRole.CUSTOMER);
+            var registerDto = new RegisterDto { FullName = "John Doe", Email = "test@test.com", Password = "Password123!", Phone = "+91 9999988888", Role = "CUSTOMER" };
             _userRepoMock.Setup(repo => repo.ExistsByEmailAsync(registerDto.Email)).ReturnsAsync(false);
             
             _userManagerMock.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
@@ -75,7 +75,7 @@ namespace QuickBite.Auth.Tests.UnitTests
         {
             // Arrange
             var loginDto = new LoginDto("invalid@test.com", "wrongpass");
-            _userManagerMock.Setup(m => m.FindByEmailAsync(loginDto.Email)).ReturnsAsync((User)null);
+            _userManagerMock.Setup(m => m.FindByEmailAsync(loginDto.Email)).ReturnsAsync((User?)null);
 
             // Act
             Func<Task> act = async () => await _authService.LoginAsync(loginDto);

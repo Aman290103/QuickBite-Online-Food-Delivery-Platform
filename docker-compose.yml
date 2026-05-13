@@ -187,7 +187,7 @@ services:
       - ReverseProxy__Clusters__delivery-cluster__Destinations__destination1__Address=http://delivery-service:8080/
       - ReverseProxy__Clusters__notification-cluster__Destinations__destination1__Address=http://notification-service:8080/
     ports:
-      - "5000:8080"
+      - "8080:8080"
     depends_on:
       - auth-service
       - restaurant-service

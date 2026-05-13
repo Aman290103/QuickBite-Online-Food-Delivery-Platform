@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace QuickBite.Payment.Controllers
 {
     [ApiController]
-    [Route("api/v1/wallet")]
+    [Route("api/v1/paywallet")]
     public class WalletController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
@@ -16,6 +16,9 @@ namespace QuickBite.Payment.Controllers
         {
             _paymentService = paymentService;
         }
+
+        [HttpGet("test")]
+        public IActionResult Test() => Ok("Wallet Service is UP");
 
         [Authorize]
         [HttpGet("balance")]
@@ -42,6 +45,15 @@ namespace QuickBite.Payment.Controllers
             var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var result = await _paymentService.GetWalletStatementsAsync(customerId);
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("seed")]
+        public async Task<IActionResult> SeedWallet([FromQuery] decimal amount = 10000)
+        {
+            var customerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var result = await _paymentService.AddMoneyToWalletAsync(customerId, new AddToWalletDto(amount, "SEED_BYPASS"));
+            return Ok(new { Message = $"Successfully seeded {amount} INR", NewBalance = result.Balance });
         }
     }
 }

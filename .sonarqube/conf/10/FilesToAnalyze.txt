@@ -1,0 +1,10 @@
+﻿F:\demo\QuickBite\QuickBite.Cart\Tests\UnitTests\CartServiceTests.cs
+C:\Users\Lenovo\.nuget\packages\microsoft.net.test.sdk\17.14.0\build\net8.0\Microsoft.NET.Test.Sdk.Program.cs
+C:\Users\Lenovo\.nuget\packages\microsoft.testplatform.testhost\17.14.0\build\net8.0\x64\testhost.exe
+C:\Users\Lenovo\.nuget\packages\microsoft.testplatform.testhost\17.14.0\build\net8.0\x64\testhost.dll
+C:\Users\Lenovo\.nuget\packages\nunit3testadapter\5.0.0\build\netcoreapp3.1\NUnit3.TestAdapter.pdb
+C:\Users\Lenovo\.nuget\packages\nunit3testadapter\5.0.0\build\netcoreapp3.1\nunit.engine.dll
+C:\Users\Lenovo\.nuget\packages\nunit3testadapter\5.0.0\build\netcoreapp3.1\nunit.engine.api.dll
+C:\Users\Lenovo\.nuget\packages\nunit3testadapter\5.0.0\build\netcoreapp3.1\nunit.engine.core.dll
+C:\Users\Lenovo\.nuget\packages\nunit3testadapter\5.0.0\build\netcoreapp3.1\testcentric.engine.metadata.dll
+C:\Users\Lenovo\.nuget\packages\nunit3testadapter\5.0.0\build\netcoreapp3.1\NUnit3.TestAdapter.dll

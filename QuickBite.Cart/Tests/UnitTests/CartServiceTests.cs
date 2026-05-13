@@ -42,7 +42,7 @@ namespace QuickBite.Cart.Tests.UnitTests
 
             _repositoryMock.Setup(r => r.GetCartByCustomerIdAsync(customerId)).ReturnsAsync(existingCart);
             
-            var dto = new AddToCartDto(newRestaurantId, Guid.NewGuid(), "Burger", 150, 1, null);
+            var dto = new AddToCartDto(newRestaurantId, "Test Restaurant", Guid.NewGuid(), "Burger", 150, 1, null);
 
             // Act
             Func<Task> act = async () => await _cartService.AddToCartAsync(customerId, dto);
@@ -62,7 +62,7 @@ namespace QuickBite.Cart.Tests.UnitTests
 
             _repositoryMock.Setup(r => r.GetCartByCustomerIdAsync(customerId)).ReturnsAsync((Entities.Cart)null);
             
-            var dto = new AddToCartDto(restaurantId, menuItemId, "Pizza", 500, 2, "Extra Cheese");
+            var dto = new AddToCartDto(restaurantId, "Test Restaurant", menuItemId, "Pizza", 500, 2, "Extra Cheese");
 
             // Act
             var result = await _cartService.AddToCartAsync(customerId, dto);

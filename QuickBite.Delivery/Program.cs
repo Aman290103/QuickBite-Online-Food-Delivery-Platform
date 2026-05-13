@@ -116,11 +116,30 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<DeliveryDbContext>();
         context.Database.Migrate();
 
-        if (!context.Agents.Any())
+        if (!context.DeliveryAgents.Any())
         {
-            context.Agents.Add(new QuickBite.Delivery.Entities.DeliveryAgent { AgentId = Guid.NewGuid(), FullName = "Rahul Sharma", Phone = "9876543210", Email = "rahul@quickbite.com", VehicleType = "Bike", Status = QuickBite.Delivery.Entities.AgentStatus.Available, IsApproved = true, CurrentLatitude = 27.4924, CurrentLongitude = 77.6737, Rating = 4.8 });
+            context.DeliveryAgents.Add(new QuickBite.Delivery.Entities.DeliveryAgent 
+            { 
+                AgentId = Guid.NewGuid(),
+                UserId = Guid.NewGuid(), // Placeholder for now
+                FullName = "Rahul Sharma", 
+                Phone = "9876543210", 
+                VehicleType = QuickBite.Delivery.Entities.VehicleType.BIKE,
+                VehicleNumber = "DL 10 AB 1234",
+                IsAvailable = true, 
+                IsVerified = true, 
+                CurrentLatitude = 27.4924, 
+                CurrentLongitude = 77.6737, 
+                AvgRating = 4.8m 
+            });
             context.SaveChanges();
         }
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred during migration.");
+    }
 }
 
 if (app.Environment.IsDevelopment())
@@ -141,3 +160,4 @@ app.MapControllers();
 app.MapHub<DeliveryLocationHub>("/hubs/delivery-location");
 
 app.Run();
+// Force Refresh: 1715274646
