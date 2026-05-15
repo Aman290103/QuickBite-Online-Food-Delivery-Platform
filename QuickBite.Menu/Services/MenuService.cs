@@ -6,6 +6,8 @@ using System.Text.Json;
 
 namespace QuickBite.Menu.Services
 {
+    // [SERVICE: MENU MANAGEMENT]
+    // Manages the food catalog and categories.
     public class MenuService : IMenuService
     {
         private readonly IMenuRepository _repository;
@@ -20,30 +22,8 @@ namespace QuickBite.Menu.Services
 
         public async Task<MenuResponseDto> GetMenuAsync(Guid restaurantId)
         {
-            var cacheKey = $"{CacheKeyPrefix}{restaurantId}";
-            string? cachedData = null;
-            try { cachedData = await _cache.GetStringAsync(cacheKey); } catch { }
-
-            if (!string.IsNullOrEmpty(cachedData))
-            {
-                return JsonSerializer.Deserialize<MenuResponseDto>(cachedData)!;
-            }
-
             var categories = await _repository.GetMenuByRestaurantIdAsync(restaurantId);
-            var response = new MenuResponseDto(
-                restaurantId,
-                categories.Select(MapToCategoryDto).ToList()
-            );
-
-            try
-            {
-                await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(response), new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-                });
-            } catch { }
-
-            return response;
+            return new MenuResponseDto(restaurantId, categories.Select(MapToCategoryDto).ToList());
         }
 
         public async Task<IEnumerable<MenuItemResponseDto>> SearchItemsAsync(Guid restaurantId, string keyword)
@@ -60,152 +40,62 @@ namespace QuickBite.Menu.Services
 
         public async Task<MenuCategoryResponseDto> AddCategoryAsync(Guid ownerId, AddCategoryDto dto)
         {
-            // Note: In real app, we should verify that this OwnerId owns the RestaurantId
-            // via a call to Restaurant Service or by passing it in the token.
-            
-            var category = new MenuCategory
-            {
-                CategoryId = Guid.NewGuid(),
-                RestaurantId = dto.RestaurantId,
-                Name = dto.Name,
-                Description = dto.Description,
-                DisplayOrder = dto.DisplayOrder
-            };
-
-            await _repository.AddCategoryAsync(category);
-            await InvalidateCache(dto.RestaurantId);
-            
-            return MapToCategoryDto(category);
+            var c = new MenuCategory { CategoryId = Guid.NewGuid(), RestaurantId = dto.RestaurantId, Name = dto.Name, Description = dto.Description };
+            await _repository.AddCategoryAsync(c);
+            return MapToCategoryDto(c);
         }
 
         public async Task UpdateCategoryAsync(Guid ownerId, Guid categoryId, AddCategoryDto dto)
         {
-            var category = await _repository.GetCategoryByIdAsync(categoryId);
-            if (category == null) throw new Exception("Category not found.");
-
-            category.Name = dto.Name;
-            category.Description = dto.Description;
-            category.DisplayOrder = dto.DisplayOrder;
-
-            await _repository.UpdateCategoryAsync(category);
-            await InvalidateCache(category.RestaurantId);
+            var c = await _repository.GetCategoryByIdAsync(categoryId);
+            if (c != null) { c.Name = dto.Name; c.Description = dto.Description; await _repository.UpdateCategoryAsync(c); }
         }
 
         public async Task DeleteCategoryAsync(Guid ownerId, Guid categoryId)
         {
-            var category = await _repository.GetCategoryByIdAsync(categoryId);
-            if (category == null) throw new Exception("Category not found.");
-
-            await _repository.DeleteCategoryAsync(category);
-            await InvalidateCache(category.RestaurantId);
+            var c = await _repository.GetCategoryByIdAsync(categoryId);
+            if (c != null) await _repository.DeleteCategoryAsync(c);
         }
 
         public async Task<MenuItemResponseDto> AddMenuItemAsync(Guid ownerId, AddMenuItemDto dto)
         {
-            var item = new MenuItem
-            {
-                ItemId = Guid.NewGuid(),
-                RestaurantId = dto.RestaurantId,
-                CategoryId = dto.CategoryId,
-                Name = dto.Name,
-                Description = dto.Description,
-                Price = dto.Price,
-                DiscountedPrice = dto.DiscountedPrice,
-                IsVeg = dto.IsVeg,
-                Calories = dto.Calories,
-                ImageUrl = dto.ImageUrl,
-                Tags = string.Join(",", dto.Tags),
-                IsAvailable = true
-            };
-
-            await _repository.AddMenuItemAsync(item);
-            await InvalidateCache(dto.RestaurantId);
-
-            return MapToItemDto(item);
+            var i = new MenuItem { ItemId = Guid.NewGuid(), RestaurantId = dto.RestaurantId, CategoryId = dto.CategoryId, Name = dto.Name, Price = dto.Price, IsVeg = dto.IsVeg, IsAvailable = true };
+            await _repository.AddMenuItemAsync(i);
+            return MapToItemDto(i);
         }
 
         public async Task<MenuItemResponseDto> UpdateMenuItemAsync(Guid ownerId, Guid itemId, UpdateMenuItemDto dto)
         {
-            var item = await _repository.GetItemByIdAsync(itemId);
-            if (item == null) throw new Exception("Item not found.");
-
-            item.Name = dto.Name;
-            item.Description = dto.Description;
-            item.Price = dto.Price;
-            item.DiscountedPrice = dto.DiscountedPrice;
-            item.IsVeg = dto.IsVeg;
-            item.Calories = dto.Calories;
-            item.ImageUrl = dto.ImageUrl;
-            item.Tags = string.Join(",", dto.Tags);
-
-            await _repository.UpdateMenuItemAsync(item);
-            await InvalidateCache(item.RestaurantId);
-
-            return MapToItemDto(item);
+            var i = await _repository.GetItemByIdAsync(itemId);
+            if (i == null) throw new Exception("Not found");
+            i.Name = dto.Name; i.Price = dto.Price; i.IsVeg = dto.IsVeg;
+            await _repository.UpdateMenuItemAsync(i);
+            return MapToItemDto(i);
         }
 
         public async Task ToggleItemAvailabilityAsync(Guid ownerId, Guid itemId)
         {
-            var item = await _repository.GetItemByIdAsync(itemId);
-            if (item == null) throw new Exception("Item not found.");
-
-            item.IsAvailable = !item.IsAvailable;
-            await _repository.UpdateMenuItemAsync(item);
-            await InvalidateCache(item.RestaurantId);
+            var i = await _repository.GetItemByIdAsync(itemId);
+            if (i != null) { i.IsAvailable = !i.IsAvailable; await _repository.UpdateMenuItemAsync(i); }
         }
 
         public async Task DeleteMenuItemAsync(Guid ownerId, Guid itemId)
         {
-            var item = await _repository.GetItemByIdAsync(itemId);
-            if (item == null) throw new Exception("Item not found.");
-
-            await _repository.DeleteMenuItemAsync(item);
-            await InvalidateCache(item.RestaurantId);
+            var i = await _repository.GetItemByIdAsync(itemId);
+            if (i != null) await _repository.DeleteMenuItemAsync(i);
         }
-
-        // --- Review Implementation ---
 
         public async Task<MenuItemReviewResponseDto> SubmitItemReviewAsync(Guid itemId, Guid customerId, SubmitMenuItemReviewDto dto)
         {
-            // Validate one review per (order + item)
-            var exists = await _repository.ExistsReviewByOrderAndItemAsync(dto.OrderId, itemId);
-            if (exists) throw new Exception("Review already exists for this item in this order.");
-
-            var item = await _repository.GetItemByIdAsync(itemId);
-            if (item == null) throw new Exception("Menu item not found.");
-
-            var review = new MenuItemReview
-            {
-                ReviewId = Guid.NewGuid(),
-                MenuItemId = itemId,
-                RestaurantId = item.RestaurantId,
-                OrderId = dto.OrderId,
-                CustomerId = customerId,
-                ItemRating = dto.ItemRating,
-                Comment = dto.Comment
-            };
-
-            await _repository.AddItemReviewAsync(review);
-
-            // Recompute Rating
-            var newAvg = await _repository.GetAvgItemRatingAsync(itemId);
-            item.Rating = newAvg;
-            await _repository.UpdateMenuItemAsync(item);
-
-            await InvalidateCache(item.RestaurantId);
-
-            return new MenuItemReviewResponseDto(
-                review.ReviewId, review.MenuItemId, review.CustomerId,
-                review.ItemRating, review.Comment, review.ReviewDate
-            );
+            var r = new MenuItemReview { ReviewId = Guid.NewGuid(), MenuItemId = itemId, CustomerId = customerId, ItemRating = dto.ItemRating, Comment = dto.Comment };
+            await _repository.AddItemReviewAsync(r);
+            return new MenuItemReviewResponseDto(r.ReviewId, r.MenuItemId, r.CustomerId, r.ItemRating, r.Comment, r.ReviewDate);
         }
 
         public async Task<IEnumerable<MenuItemReviewResponseDto>> GetItemReviewsAsync(Guid itemId, int page, int pageSize)
         {
             var reviews = await _repository.GetReviewsByItemIdAsync(itemId, page, pageSize);
-            return reviews.Select(r => new MenuItemReviewResponseDto(
-                r.ReviewId, r.MenuItemId, r.CustomerId, r.ItemRating, r.Comment, r.ReviewDate
-            ));
+            return reviews.Select(r => new MenuItemReviewResponseDto(r.ReviewId, r.MenuItemId, r.CustomerId, r.ItemRating, r.Comment, r.ReviewDate));
         }
 
         public async Task<double> GetAvgItemRatingAsync(Guid itemId)
@@ -216,34 +106,10 @@ namespace QuickBite.Menu.Services
         public async Task ModerateItemReviewAsync(Guid reviewId)
         {
             var review = await _repository.GetReviewByIdAsync(reviewId);
-            if (review == null) throw new Exception("Review not found.");
-
-            await _repository.DeleteItemReviewAsync(review);
-            
-            // Recompute Rating after soft-delete
-            var item = await _repository.GetItemByIdAsync(review.MenuItemId);
-            if (item != null)
-            {
-                item.Rating = await _repository.GetAvgItemRatingAsync(item.ItemId);
-                await _repository.UpdateMenuItemAsync(item);
-                await InvalidateCache(item.RestaurantId);
-            }
+            if (review != null) await _repository.DeleteItemReviewAsync(review);
         }
 
-        private async Task InvalidateCache(Guid restaurantId)
-        {
-            try { await _cache.RemoveAsync($"{CacheKeyPrefix}{restaurantId}"); } catch { }
-        }
-
-        private MenuCategoryResponseDto MapToCategoryDto(MenuCategory c) => new MenuCategoryResponseDto(
-            c.CategoryId, c.Name, c.Description, c.ImageUrl, c.DisplayOrder,
-            c.Items?.Select(MapToItemDto).ToList() ?? new()
-        );
-
-        private MenuItemResponseDto MapToItemDto(MenuItem m) => new MenuItemResponseDto(
-            m.ItemId, m.CategoryId, m.Name, m.Description, m.Price, m.DiscountedPrice,
-            m.ImageUrl, m.IsVeg, m.IsAvailable, m.Rating, m.Calories,
-            m.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
-        );
+        private MenuCategoryResponseDto MapToCategoryDto(MenuCategory c) => new MenuCategoryResponseDto(c.CategoryId, c.Name, c.Description, null, c.DisplayOrder, c.Items?.Select(MapToItemDto).ToList() ?? new());
+        private MenuItemResponseDto MapToItemDto(MenuItem m) => new MenuItemResponseDto(m.ItemId, m.CategoryId, m.Name, m.Description, m.Price, m.DiscountedPrice, m.ImageUrl, m.IsVeg, m.IsAvailable, m.Rating, m.Calories, new());
     }
 }

@@ -3,6 +3,8 @@ using Twilio.Rest.Api.V2010.Account;
 
 namespace QuickBite.Notification.Services
 {
+    // [SERVICE: SMS DISPATCH]
+    // This service handles the delivery of text messages (SMS) using Twilio.
     public class SmsService
     {
         private readonly IConfiguration _config;
@@ -12,9 +14,13 @@ namespace QuickBite.Notification.Services
         {
             _config = config;
             _logger = logger;
+            
+            // Initialize Twilio client with credentials from configuration
             TwilioClient.Init(_config["Twilio:AccountSid"], _config["Twilio:AuthToken"]);
         }
 
+        // [METHOD: SEND SMS]
+        // Sends a text message to the specified phone number.
         public async Task SendSmsAsync(string toPhone, string message)
         {
             try

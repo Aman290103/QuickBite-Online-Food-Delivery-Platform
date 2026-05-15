@@ -56,7 +56,7 @@ namespace QuickBite.Notification.Services
             await IncrementUnreadCount(dto.RecipientId);
 
             // 3. Route to Channel (Fire-and-forget)
-            _ = RouteNotification(notification);
+            _ = RouteNotification(notification, dto.RecipientContact);
         }
 
         public async Task BroadcastAsync(BroadcastDto dto)
@@ -113,7 +113,7 @@ namespace QuickBite.Notification.Services
             await _cache.RemoveAsync($"unread:{userId}"); // Force refresh on next check
         }
 
-        private async Task RouteNotification(Entities.Notification n)
+        private async Task RouteNotification(Entities.Notification n, string? contact = null)
         {
             switch (n.Channel)
             {
@@ -121,12 +121,20 @@ namespace QuickBite.Notification.Services
                     await _hubContext.Clients.Group(n.RecipientId.ToString()).SendAsync("ReceiveNotification", MapToDto(n));
                     break;
                 case NotificationChannel.EMAIL:
-                    // In real setup, you'd fetch recipient's email from User Service
-                    // For now, logged in user's email is not accessible here easily without extra lookup
-                    _logger.LogWarning("Email routing requested but not fully implemented (requires User Service lookup).");
+                    // [FEATURE: NOTIFICATIONS] - SMTP Integration
+                    // Uses MailKit to connect to Gmail and send the formatted HTML body.
+                    if (!string.IsNullOrEmpty(contact))
+                    {
+                        await _emailService.SendEmailAsync(contact, n.Title, n.Message);
+                    }
                     break;
                 case NotificationChannel.SMS:
-                    _logger.LogWarning("SMS routing requested but not fully implemented (requires User Service lookup).");
+                    // [FEATURE: NOTIFICATIONS] - Twilio Integration
+                    // Uses the Twilio API to dispatch a text message to the global phone network.
+                    if (!string.IsNullOrEmpty(contact))
+                    {
+                        await _smsService.SendSmsAsync(contact, n.Message);
+                    }
                     break;
             }
         }

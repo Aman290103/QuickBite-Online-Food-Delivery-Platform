@@ -11,6 +11,9 @@ using QuickBite.Auth.Interfaces;
 
 namespace QuickBite.Auth.Services
 {
+    // [SERVICE: AUTHENTICATION]
+    // This service is responsible for all security and identity management within QuickBite.
+    // It handles user registration, secure login with password hashing, and JWT token issuance.
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
@@ -27,6 +30,9 @@ namespace QuickBite.Auth.Services
             _configuration = configuration;
         }
 
+        // [METHOD: REGISTER]
+        // Creates a new user in the system using ASP.NET Core Identity.
+        // It validates email uniqueness and assigns roles (Customer, Owner, etc.).
         public async Task<User> RegisterAsync(RegisterDto registerDto)
         {
             if (await _userRepository.ExistsByEmailAsync(registerDto.Email))
@@ -61,6 +67,9 @@ namespace QuickBite.Auth.Services
             return user;
         }
 
+        // [METHOD: LOGIN]
+        // Validates user credentials and returns a set of JWT tokens (Access + Refresh).
+        // It also checks if the account is currently active.
         public async Task<TokenDto> LoginAsync(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
@@ -77,6 +86,9 @@ namespace QuickBite.Auth.Services
             return await GenerateTokensAsync(user);
         }
 
+        // [METHOD: REFRESH TOKEN]
+        // Allows users to get a new Access Token without logging in again, 
+        // as long as their Refresh Token is still valid.
         public async Task<TokenDto> RefreshTokenAsync(string accessToken, string refreshToken)
         {
             try
@@ -98,6 +110,8 @@ namespace QuickBite.Auth.Services
             }
         }
 
+        // [METHOD: PROFILE MANAGEMENT]
+        // Retrieves and updates user profile information like phone number and profile picture.
         public async Task<ProfileDto> GetProfileAsync(Guid userId)
         {
             var user = await _userRepository.FindByUserIdAsync(userId);
@@ -118,6 +132,8 @@ namespace QuickBite.Auth.Services
             await _userRepository.UpdateAsync(user);
         }
 
+        // [METHOD: SECURITY]
+        // Handles password changes and account deactivation for security purposes.
         public async Task ChangePasswordAsync(Guid userId, ChangePasswordDto passwordDto)
         {
             var user = await _userRepository.FindByUserIdAsync(userId);
@@ -139,6 +155,8 @@ namespace QuickBite.Auth.Services
             await _userRepository.UpdateAsync(user);
         }
 
+        // [ADMIN METHODS]
+        // Administrative tools to manage user accounts, including suspension and deletion.
         public async Task<IEnumerable<ProfileDto>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllUsersAsync();
@@ -162,6 +180,9 @@ namespace QuickBite.Auth.Services
             await _userManager.DeleteAsync(user);
         }
 
+        // [PRIVATE HELPER: TOKEN GENERATION]
+        // Creates the actual JWT string with claims (User ID, Role, etc.) 
+        // and signs it with the secret key from appsettings.
         private async Task<TokenDto> GenerateTokensAsync(User user)
         {
             var claims = new List<Claim>

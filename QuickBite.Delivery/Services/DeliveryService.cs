@@ -8,6 +8,9 @@ using System.Text.Json;
 
 namespace QuickBite.Delivery.Services
 {
+    // [SERVICE: DELIVERY TRACKING]
+    // This service manages the lifecycle of a delivery agent (rider).
+    // It handles onboarding, availability, and real-time GPS location broadcasting.
     public class DeliveryService : IDeliveryService
     {
         private readonly IDeliveryRepository _repository;
@@ -27,6 +30,7 @@ namespace QuickBite.Delivery.Services
             _logger = logger;
         }
 
+        // [METHOD: AGENT ONBOARDING]
         public async Task<AgentResponseDto> RegisterAgentAsync(Guid userId, RegisterAgentDto dto)
         {
             var existing = await _repository.GetByUserIdAsync(userId);
@@ -50,6 +54,7 @@ namespace QuickBite.Delivery.Services
             return MapToDto(agent);
         }
 
+        // [METHOD: PROFILE & DISCOVERY]
         public async Task<AgentResponseDto> GetProfileAsync(Guid agentId)
         {
             var agent = await _repository.GetByIdAsync(agentId);
@@ -63,6 +68,7 @@ namespace QuickBite.Delivery.Services
             return agents.Select(MapToDto);
         }
 
+        // [METHOD: ADMIN & STATUS]
         public async Task VerifyAgentAsync(Guid agentId)
         {
             var agent = await _repository.GetByIdAsync(agentId);
@@ -71,7 +77,6 @@ namespace QuickBite.Delivery.Services
             agent.IsVerified = true;
             await _repository.UpdateAsync(agent);
             await _repository.SaveChangesAsync();
-            _logger.LogInformation("Agent {AgentId} verified by admin.", agentId);
         }
 
         public async Task SetAvailabilityAsync(Guid agentId, bool isAvailable)
@@ -84,6 +89,7 @@ namespace QuickBite.Delivery.Services
             await _repository.SaveChangesAsync();
         }
 
+        // [METHOD: LIVE LOCATION TRACKING]
         public async Task UpdateLocationAsync(Guid agentId, UpdateLocationDto dto)
         {
             var agent = await _repository.GetByIdAsync(agentId);
@@ -92,11 +98,9 @@ namespace QuickBite.Delivery.Services
             agent.CurrentLatitude = dto.Latitude;
             agent.CurrentLongitude = dto.Longitude;
 
-            // 1. Save to DB
             await _repository.UpdateAsync(agent);
             await _repository.SaveChangesAsync();
 
-            // 2. Cache in Redis (30 sec TTL)
             var cacheKey = $"agent_location:{agentId}";
             var locationData = JsonSerializer.Serialize(new { agentId, dto.Latitude, dto.Longitude });
             await _cache.SetStringAsync(cacheKey, locationData, new DistributedCacheEntryOptions
@@ -104,22 +108,21 @@ namespace QuickBite.Delivery.Services
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30)
             });
 
-            // 3. Broadcast via SignalR to Order Group
             if (dto.OrderId.HasValue)
             {
                 await _hubContext.Clients.Group($"order-{dto.OrderId}")
                     .SendAsync("ReceiveLocation", agentId, dto.Latitude, dto.Longitude);
-                _logger.LogDebug("Broadcasted location for Agent {AgentId} to Order {OrderId}", agentId, dto.OrderId);
             }
         }
 
+        // [METHOD: ASSIGNMENT & COMPLETION]
         public async Task AssignOrderAsync(Guid agentId, Guid orderId)
         {
             var agent = await _repository.GetByIdAsync(agentId);
             if (agent == null) throw new Exception("Agent not found.");
-            if (!agent.IsAvailable || !agent.IsVerified) throw new Exception("Agent is not available for assignment.");
+            if (!agent.IsAvailable || !agent.IsVerified) throw new Exception("Agent is not available.");
 
-            agent.IsAvailable = false; // Busy with order
+            agent.IsAvailable = false;
             await _repository.UpdateAsync(agent);
             await _repository.SaveChangesAsync();
         }
@@ -130,7 +133,7 @@ namespace QuickBite.Delivery.Services
             if (agent == null) throw new Exception("Agent not found.");
 
             agent.TotalDeliveries++;
-            agent.IsAvailable = true; // Ready for next order
+            agent.IsAvailable = true;
             await _repository.UpdateAsync(agent);
             await _repository.SaveChangesAsync();
         }
@@ -140,7 +143,6 @@ namespace QuickBite.Delivery.Services
             var agent = await _repository.GetByIdAsync(agentId);
             if (agent == null) throw new Exception("Agent not found.");
 
-            // Basic moving average for rating
             agent.AvgRating = (agent.AvgRating * agent.TotalDeliveries + rating) / (agent.TotalDeliveries + 1);
             await _repository.UpdateAsync(agent);
             await _repository.SaveChangesAsync();

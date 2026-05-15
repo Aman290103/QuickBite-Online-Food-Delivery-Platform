@@ -6,5 +6,7 @@ namespace QuickBite.Order.Events
         Guid CustomerId { get; }
         Guid RestaurantId { get; }
         decimal TotalAmount { get; }
+        string CustomerEmail { get; }
+        string CustomerPhone { get; }
     }
 }

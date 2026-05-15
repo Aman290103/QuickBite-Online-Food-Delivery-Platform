@@ -6,6 +6,8 @@ using System.Text.Json;
 
 namespace QuickBite.Restaurant.Services
 {
+    // [SERVICE: RESTAURANT MANAGEMENT]
+    // Manages restaurant lifecycle and reviews.
     public class RestaurantService : IRestaurantService
     {
         private readonly IRestaurantRepository _repository;
@@ -20,26 +22,6 @@ namespace QuickBite.Restaurant.Services
 
         public async Task<RestaurantResponseDto> RegisterRestaurantAsync(Guid ownerId, RegisterRestaurantDto dto)
         {
-            // 1. Priority check: PlaceId
-            if (!string.IsNullOrEmpty(dto.PlaceId))
-            {
-                var existingByPlaceId = await _repository.GetAllAsync();
-                var match = existingByPlaceId.FirstOrDefault(r => r.PlaceId == dto.PlaceId);
-                if (match != null) return MapToDto(match);
-            }
-
-            // 2. Secondary check: Name + Address
-            if (await _repository.ExistsByNameAndAddressAsync(dto.Name, dto.Address))
-            {
-                // Find and return existing one
-                var existingResults = await _repository.SearchByNameAsync(dto.Name);
-                var exactMatch = existingResults.FirstOrDefault(r => 
-                    r.Name.ToLower().Trim() == dto.Name.ToLower().Trim() && 
-                    r.Address.ToLower().Trim() == dto.Address.ToLower().Trim());
-                
-                if (exactMatch != null) return MapToDto(exactMatch);
-            }
-
             var restaurant = new Entities.Restaurant
             {
                 RestaurantId = Guid.NewGuid(),
@@ -58,91 +40,74 @@ namespace QuickBite.Restaurant.Services
                 ImageUrl = dto.ImageUrl,
                 PlaceId = dto.PlaceId,
                 AvgRating = dto.Rating > 0 ? (double)dto.Rating : 0.0, 
-                IsApproved = false, 
-                IsOpen = true,
-                CreatedAt = DateTime.UtcNow
+                IsApproved = false,
+                IsOpen = true
             };
-
             await _repository.AddAsync(restaurant);
+            await _repository.SaveChangesAsync();
             return MapToDto(restaurant);
         }
 
         public async Task<RestaurantResponseDto?> GetRestaurantByIdAsync(Guid id)
         {
-            var cacheKey = $"{CacheKeyPrefix}{id}";
-            string? cachedData = null;
-            try
-            {
-                cachedData = await _cache.GetStringAsync(cacheKey);
-            }
-            catch (Exception) { }
-
-            if (!string.IsNullOrEmpty(cachedData))
-            {
-                return JsonSerializer.Deserialize<RestaurantResponseDto>(cachedData);
-            }
-
-            var restaurant = await _repository.GetByIdAsync(id);
-            if (restaurant == null) return null;
-
-            // Direct query for stats to bypass any navigation property or filter issues
-            var allReviews = await _repository.GetReviewsByRestaurantIdAsync(id, 1, 1000);
-            var reviewsList = allReviews.ToList();
-            
-            restaurant.ReviewCount = reviewsList.Count;
-            if (reviewsList.Any()) 
-            {
-                restaurant.AvgRating = reviewsList.Average(r => r.FoodRating);
-            }
-
-            var dto = MapToDto(restaurant);
-            
-            // Bypass cache for GetById during this dynamic phase to ensure users see updates instantly
-            return dto;
+            var r = await _repository.GetByIdAsync(id);
+            return r == null ? null : MapToDto(r);
         }
 
         public async Task<IEnumerable<RestaurantResponseDto>> GetNearbyRestaurantsAsync(double lat, double lon, double radius)
         {
-            var restaurants = await _repository.FindNearbyAsync(lat, lon, radius);
-            var results = new List<RestaurantResponseDto>();
-            
-            foreach (var r in restaurants.Where(r => r.IsApproved))
-            {
-                var reviews = (await _repository.GetReviewsByRestaurantIdAsync(r.RestaurantId, 1, 1000)).ToList();
-                r.ReviewCount = reviews.Count;
-                if (reviews.Any()) r.AvgRating = reviews.Average(rev => rev.FoodRating);
-                results.Add(MapToDto(r));
-            }
-            
-            return results;
+            var results = await _repository.FindNearbyAsync(lat, lon, radius);
+            return results.Where(r => r.IsApproved).Select(MapToDto);
         }
 
         public async Task<IEnumerable<RestaurantResponseDto>> SearchRestaurantsAsync(string name)
         {
             var results = await _repository.SearchByNameAsync(name);
-            var dtos = new List<RestaurantResponseDto>();
-            foreach (var r in results)
-            {
-                var reviews = (await _repository.GetReviewsByRestaurantIdAsync(r.RestaurantId, 1, 1000)).ToList();
-                r.ReviewCount = reviews.Count;
-                if (reviews.Any()) r.AvgRating = reviews.Average(rev => rev.FoodRating);
-                dtos.Add(MapToDto(r));
-            }
-            return dtos;
+            return results.Where(r => r.IsApproved).Select(MapToDto);
         }
 
         public async Task<IEnumerable<RestaurantResponseDto>> GetRestaurantsByCuisineAsync(string cuisine)
         {
-            var results = await _repository.FilterByCuisineAsync(cuisine);
-            var dtos = new List<RestaurantResponseDto>();
-            foreach (var r in results)
-            {
-                var reviews = (await _repository.GetReviewsByRestaurantIdAsync(r.RestaurantId, 1, 1000)).ToList();
-                r.ReviewCount = reviews.Count;
-                if (reviews.Any()) r.AvgRating = reviews.Average(rev => rev.FoodRating);
-                dtos.Add(MapToDto(r));
-            }
-            return dtos;
+            var results = await _repository.GetAllAsync();
+            return results.Where(r => r.Cuisine.Contains(cuisine, StringComparison.OrdinalIgnoreCase) && r.IsApproved).Select(MapToDto);
+        }
+
+        public async Task<IEnumerable<RestaurantResponseDto>> GetPendingApprovalsAsync()
+        {
+            var results = await _repository.GetAllAsync();
+            return results.Where(r => !r.IsApproved).Select(MapToDto);
+        }
+
+        public async Task<RestaurantResponseDto> UpdateRestaurantAsync(Guid id, Guid ownerId, UpdateRestaurantDto dto)
+        {
+            var r = await _repository.GetByIdAsync(id);
+            if (r == null || r.OwnerId != ownerId) throw new Exception("Unauthorized.");
+            r.Name = dto.Name;
+            r.Description = dto.Description;
+            r.Cuisine = dto.Cuisine;
+            r.Address = dto.Address;
+            r.ImageUrl = dto.ImageUrl;
+            await _repository.UpdateAsync(r);
+            await _repository.SaveChangesAsync();
+            return MapToDto(r);
+        }
+
+        public async Task ApproveRestaurantAsync(Guid id)
+        {
+            var r = await _repository.GetByIdAsync(id);
+            if (r != null) { r.IsApproved = true; await _repository.UpdateAsync(r); await _repository.SaveChangesAsync(); }
+        }
+
+        public async Task ToggleRestaurantStatusAsync(Guid id, Guid ownerId)
+        {
+            var r = await _repository.GetByIdAsync(id);
+            if (r != null && r.OwnerId == ownerId) { r.IsOpen = !r.IsOpen; await _repository.UpdateAsync(r); await _repository.SaveChangesAsync(); }
+        }
+
+        public async Task UpdateRatingAsync(Guid id, double newRating)
+        {
+            var r = await _repository.GetByIdAsync(id);
+            if (r != null) { r.AvgRating = newRating; await _repository.UpdateAsync(r); await _repository.SaveChangesAsync(); }
         }
 
         public async Task<IEnumerable<RestaurantResponseDto>> GetRestaurantsByOwnerAsync(Guid ownerId)
@@ -151,93 +116,25 @@ namespace QuickBite.Restaurant.Services
             return results.Where(r => r.OwnerId == ownerId).Select(MapToDto);
         }
 
-        public async Task<IEnumerable<RestaurantResponseDto>> GetPendingApprovalsAsync()
-        {
-            var all = await _repository.GetAllAsync();
-            return all.Where(r => !r.IsApproved).Select(MapToDto);
-        }
-
-        public async Task<RestaurantResponseDto> UpdateRestaurantAsync(Guid id, Guid ownerId, UpdateRestaurantDto dto)
-        {
-            var restaurant = await _repository.GetByIdAsync(id);
-            if (restaurant == null || restaurant.OwnerId != ownerId)
-                throw new UnauthorizedAccessException("Not authorized.");
-
-            restaurant.Name = dto.Name;
-            restaurant.Description = dto.Description;
-            restaurant.Cuisine = dto.Cuisine;
-            restaurant.Address = dto.Address;
-            restaurant.City = dto.City;
-            restaurant.Latitude = dto.Latitude;
-            restaurant.Longitude = dto.Longitude;
-            restaurant.Phone = dto.Phone;
-            restaurant.DeliveryRadiusKm = dto.DeliveryRadiusKm;
-            restaurant.MinOrderAmount = dto.MinOrderAmount;
-            restaurant.EstimatedDeliveryMin = dto.EstimatedDeliveryMin;
-            restaurant.ImageUrl = dto.ImageUrl;
-
-            await _repository.UpdateAsync(restaurant);
-            try { await _cache.RemoveAsync($"{CacheKeyPrefix}{id}"); } catch { }
-            
-            return MapToDto(restaurant);
-        }
-
-        public async Task ApproveRestaurantAsync(Guid id)
-        {
-            var restaurant = await _repository.GetByIdAsync(id);
-            if (restaurant == null) throw new Exception("Restaurant not found.");
-
-            restaurant.IsApproved = true;
-            await _repository.UpdateAsync(restaurant);
-        }
-
-        public async Task ToggleRestaurantStatusAsync(Guid id, Guid ownerId)
-        {
-            var restaurant = await _repository.GetByIdAsync(id);
-            if (restaurant == null || restaurant.OwnerId != ownerId)
-                throw new UnauthorizedAccessException("Not authorized.");
-
-            restaurant.IsOpen = !restaurant.IsOpen;
-            await _repository.UpdateAsync(restaurant);
-            try { await _cache.RemoveAsync($"{CacheKeyPrefix}{id}"); } catch { }
-        }
-
-        public async Task UpdateRatingAsync(Guid id, double newRating)
-        {
-            var restaurant = await _repository.GetByIdAsync(id);
-            if (restaurant == null) throw new Exception("Restaurant not found.");
-
-            restaurant.AvgRating = newRating;
-            await _repository.UpdateAsync(restaurant);
-            try { await _cache.RemoveAsync($"{CacheKeyPrefix}{id}"); } catch { }
-        }
-
         public async Task DeleteRestaurantAsync(Guid id)
         {
-            var restaurant = await _repository.GetByIdAsync(id);
-            if (restaurant == null) throw new Exception("Restaurant not found.");
-            await _repository.DeleteAsync(restaurant);
-            try { await _cache.RemoveAsync($"{CacheKeyPrefix}{id}"); } catch { }
+            var r = await _repository.GetByIdAsync(id);
+            if (r != null) { await _repository.DeleteAsync(r); await _repository.SaveChangesAsync(); }
         }
 
         public async Task<bool> IsDuplicateAsync(string name, string address, string? placeId = null)
         {
-            if (!string.IsNullOrEmpty(placeId))
-            {
-                if (await _repository.ExistsByPlaceIdAsync(placeId)) return true;
+            if (!string.IsNullOrEmpty(placeId)) {
+                var all = await _repository.GetAllAsync();
+                return all.Any(r => r.PlaceId == placeId);
             }
             return await _repository.ExistsByNameAndAddressAsync(name, address);
         }
 
         public async Task UpdateTravelTimeAsync(Guid restaurantId, int estimatedMinutes)
         {
-            var restaurant = await _repository.GetByIdAsync(restaurantId);
-            if (restaurant != null)
-            {
-                restaurant.EstimatedDeliveryMin = estimatedMinutes;
-                await _repository.UpdateAsync(restaurant);
-                try { await _cache.RemoveAsync($"{CacheKeyPrefix}{restaurantId}"); } catch { }
-            }
+            var r = await _repository.GetByIdAsync(restaurantId);
+            if (r != null) { r.EstimatedDeliveryMin = estimatedMinutes; await _repository.UpdateAsync(r); await _repository.SaveChangesAsync(); }
         }
 
         public async Task<IEnumerable<RestaurantResponseDto>> GetAllRestaurantsAsync()
@@ -246,15 +143,9 @@ namespace QuickBite.Restaurant.Services
             return results.Select(MapToDto);
         }
 
-        // --- Review Implementation ---
-
         public async Task<ReviewResponseDto> SubmitReviewAsync(Guid restaurantId, Guid customerId, AddReviewDto dto)
         {
-            var exists = await _repository.ExistsReviewByOrderIdAsync(dto.OrderId);
-            if (exists) throw new InvalidOperationException("Review already exists for this order.");
-
-            var review = new RestaurantReview
-            {
+            var review = new RestaurantReview {
                 ReviewId = Guid.NewGuid(),
                 RestaurantId = restaurantId,
                 CustomerId = customerId,
@@ -263,18 +154,7 @@ namespace QuickBite.Restaurant.Services
                 Comment = dto.Comment
             };
             await _repository.AddReviewAsync(review);
-
-            var restaurant = await _repository.GetByIdAsync(restaurantId);
-            if (restaurant == null) throw new Exception("Restaurant not found.");
-            
-            await _repository.SaveChangesAsync(); 
-            
-            restaurant.AvgRating = await _repository.GetAvgFoodRatingAsync(restaurantId); 
-            restaurant.ReviewCount = await _repository.GetReviewCountAsync(restaurantId);
-            await _repository.SaveChangesAsync(); 
-
-            try { await _cache.RemoveAsync($"{CacheKeyPrefix}{restaurantId}"); } catch { }
-
+            await _repository.SaveChangesAsync();
             return MapToReviewEntityDto(review);
         }
 
@@ -292,27 +172,15 @@ namespace QuickBite.Restaurant.Services
         public async Task DeleteReviewAsync(Guid reviewId)
         {
             var review = await _repository.GetReviewByIdAsync(reviewId);
-            if (review == null) throw new Exception("Review not found.");
-
-            await _repository.DeleteReviewAsync(review);
-            await _repository.SaveChangesAsync();
-            
-            var restaurant = await _repository.GetByIdAsync(review.RestaurantId);
-            if (restaurant != null)
-            {
-                restaurant.AvgRating = await _repository.GetAvgFoodRatingAsync(review.RestaurantId);
-                restaurant.ReviewCount = await _repository.GetReviewCountAsync(review.RestaurantId);
-                await _repository.SaveChangesAsync();
-                try { await _cache.RemoveAsync($"{CacheKeyPrefix}{review.RestaurantId}"); } catch { }
-            }
+            if (review != null) { await _repository.DeleteReviewAsync(review); await _repository.SaveChangesAsync(); }
         }
-
-        private ReviewResponseDto MapToReviewEntityDto(RestaurantReview r) => new ReviewResponseDto(
-            r.ReviewId, r.RestaurantId, r.OrderId, r.CustomerId, "Customer", r.FoodRating, r.Comment, r.ReviewDate
-        );
 
         private RestaurantResponseDto MapToDto(Entities.Restaurant r) => new RestaurantResponseDto(
             r.RestaurantId, r.OwnerId, r.Name, r.Description, r.Cuisine, r.Address, r.City, r.Latitude, r.Longitude, r.Phone, r.AvgRating, r.IsOpen, r.IsApproved, r.DeliveryRadiusKm, r.MinOrderAmount, r.EstimatedDeliveryMin, r.ImageUrl, r.PlaceId, r.ReviewCount, r.CreatedAt
+        );
+
+        private ReviewResponseDto MapToReviewEntityDto(RestaurantReview r) => new ReviewResponseDto(
+            r.ReviewId, r.RestaurantId, r.OrderId, r.CustomerId, "Customer", r.FoodRating, r.Comment, r.ReviewDate
         );
     }
 }

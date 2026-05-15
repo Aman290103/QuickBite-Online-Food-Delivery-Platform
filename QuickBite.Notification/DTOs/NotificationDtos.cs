@@ -11,7 +11,8 @@ namespace QuickBite.Notification.DTOs
         [Required] string Message,
         string? RelatedId = null,
         string? RelatedType = null,
-        bool IsAudio = false
+        bool IsAudio = false,
+        string? RecipientContact = null
     );
 
     public record NotificationResponseDto(

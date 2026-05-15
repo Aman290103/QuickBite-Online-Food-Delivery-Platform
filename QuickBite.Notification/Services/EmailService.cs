@@ -4,6 +4,9 @@ using MimeKit.Text;
 
 namespace QuickBite.Notification.Services
 {
+    // [SERVICE: EMAIL DISPATCH]
+    // This service is responsible for the physical delivery of emails.
+    // It uses the MailKit library to connect to an external SMTP server (like Gmail).
     public class EmailService
     {
         private readonly IConfiguration _config;
@@ -15,6 +18,8 @@ namespace QuickBite.Notification.Services
             _logger = logger;
         }
 
+        // [METHOD: SEND EMAIL]
+        // Wraps the message in a branded QuickBite HTML template and sends it.
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
             try
@@ -25,6 +30,7 @@ namespace QuickBite.Notification.Services
                 email.Subject = subject;
                 
                 // HTML Template with QuickBite Branding
+                // This ensures every email looks professional and consistent.
                 var htmlBody = $@"
                 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px;'>
                     <h2 style='color: #FF4B2B; text-align: center;'>QuickBite</h2>
@@ -38,9 +44,13 @@ namespace QuickBite.Notification.Services
 
                 email.Body = new TextPart(TextFormat.Html) { Text = htmlBody };
 
+                // SMTP Connection Logic
                 using var smtp = new SmtpClient();
                 await smtp.ConnectAsync(_config["Email:Host"], int.Parse(_config["Email:Port"]!), MailKit.Security.SecureSocketOptions.StartTls);
+                
+                // Authenticate using the App Password generated in Google Security
                 await smtp.AuthenticateAsync(_config["Email:Username"], _config["Email:Password"]);
+                
                 await smtp.SendAsync(email);
                 await smtp.DisconnectAsync(true);
 

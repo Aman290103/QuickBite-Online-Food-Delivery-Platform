@@ -3,11 +3,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QuickBite.Order.DTOs
 {
+    // [FEATURE: NOTIFICATIONS] - Data structure for incoming order requests
+    // Added CustomerEmail and CustomerPhone to ensure contact info is available 
+    // immediately after the order is submitted.
     public record PlaceOrderDto(
-        [Required] string ModeOfPayment, // COD, ONLINE
+        [Required] string ModeOfPayment, 
         [Required] string DeliveryAddress,
         string? SpecialInstructions,
-        string? PromoCode
+        string? PromoCode,
+        string? CustomerEmail,
+        string? CustomerPhone
     );
 
     public record OrderItemDto(
