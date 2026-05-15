@@ -92,9 +92,9 @@ services:
           name: quickbite-postgres
           property: connectionString
       - key: Services__CartUrl
-        value: http://cart-service:8080/
+        value: http://cart-service:10000/
       - key: Services__PaymentUrl
-        value: http://payment-service:8080/
+        value: http://payment-service:10000/
 
   - type: web
     name: payment-service
@@ -148,18 +148,18 @@ services:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
       - key: ReverseProxy__Clusters__auth-cluster__Destinations__destination1__Address
-        value: http://auth-service:8080/
+        value: http://auth-service:10000/
       - key: ReverseProxy__Clusters__restaurant-cluster__Destinations__destination1__Address
-        value: http://restaurant-service:8080/
+        value: http://restaurant-service:10000/
       - key: ReverseProxy__Clusters__menu-cluster__Destinations__destination1__Address
-        value: http://menu-service:8080/
+        value: http://menu-service:10000/
       - key: ReverseProxy__Clusters__cart-cluster__Destinations__destination1__Address
-        value: http://cart-service:8080/
+        value: http://cart-service:10000/
       - key: ReverseProxy__Clusters__order-cluster__Destinations__destination1__Address
-        value: http://order-service:8080/
+        value: http://order-service:10000/
       - key: ReverseProxy__Clusters__payment-cluster__Destinations__destination1__Address
-        value: http://payment-service:8080/
+        value: http://payment-service:10000/
       - key: ReverseProxy__Clusters__delivery-cluster__Destinations__destination1__Address
-        value: http://delivery-service:8080/
+        value: http://delivery-service:10000/
       - key: ReverseProxy__Clusters__notification-cluster__Destinations__destination1__Address
-        value: http://notification-service:8080/
+        value: http://notification-service:10000/
