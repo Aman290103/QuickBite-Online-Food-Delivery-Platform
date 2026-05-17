@@ -162,6 +162,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     for (int i = 0; i < 15; i++)
     {
         try
@@ -169,6 +170,10 @@ using (var scope = app.Services.CreateScope())
             logger.LogInformation($"Attempting to migrate database (attempt {i + 1})...");
             dbContext.Database.Migrate();
             logger.LogInformation("Database migration completed successfully.");
+            
+            logger.LogInformation("Seeding default auth data...");
+            QuickBite.Auth.Data.DbInitializer.SeedAsync(dbContext, userManager).GetAwaiter().GetResult();
+            logger.LogInformation("Auth data seeding completed.");
             break;
         }
         catch (Exception ex)

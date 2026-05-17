@@ -82,6 +82,7 @@ namespace QuickBite.Restaurant.Data
                 ("Cafe The Heaven", "Multi-Cuisine, Beverages", 4.0, 30, 150, "https://images.unsplash.com/photo-1498804103079-a6351b050096")
             };
 
+            var lordOwnerId = new Guid("99999999-9999-9999-9999-999999999999");
             foreach (var r in restaurants)
             {
                 // Generate a consistent ID based on Name hash for cross-service sync
@@ -92,13 +93,14 @@ namespace QuickBite.Restaurant.Data
                 if (existing != null)
                 {
                     existing.ImageUrl = uniqueImage;
+                    existing.OwnerId = lordOwnerId; // Ensure existing ones are also owned by lordowner!
                 }
                 else
                 {
                     context.Restaurants.Add(new QuickBite.Restaurant.Entities.Restaurant
                     {
                         RestaurantId = resId,
-                        OwnerId = Guid.NewGuid(),
+                        OwnerId = lordOwnerId, // Seed under lordowner's account
                         Name = r.Name,
                         Description = $"{r.Name} - Authentic {r.Cuisine} in Mathura. Serving the best local flavors with premium quality.",
                         Cuisine = r.Cuisine,
