@@ -73,22 +73,24 @@ namespace QuickBite.Restaurant.Data
             foreach (var r in restaurants)
             {
                 // Generate a consistent ID based on Name hash for cross-service sync
-                var id = GenerateGuid(r.Name);
-                if (!context.Restaurants.Any(res => res.RestaurantId == id))
+                var resId = GenerateGuid(r.Name);
+                if (!context.Restaurants.Any(res => res.RestaurantId == resId))
                 {
-                    context.Restaurants.Add(new Entities.Restaurant
+                    var uniqueImage = $"https://images.unsplash.com/photo-{GetImageId(r.Name, r.Cuisine)}?auto=format&fit=crop&w=800&q=80";
+
+                    context.Restaurants.Add(new QuickBite.Restaurant.Entities.Restaurant
                     {
-                        RestaurantId = id,
+                        RestaurantId = resId,
                         OwnerId = Guid.NewGuid(),
                         Name = r.Name,
-                        Description = $"{r.Name} - Authentic {r.Cuisine} in Mathura.",
+                        Description = $"{r.Name} - Authentic {r.Cuisine} in Mathura. Serving the best local flavors with premium quality.",
                         Cuisine = r.Cuisine,
                         Address = "Mathura, Uttar Pradesh",
                         City = "Mathura",
                         AvgRating = r.Rating,
                         IsOpen = true,
                         IsApproved = true,
-                        ImageUrl = r.Img + "?w=800",
+                        ImageUrl = uniqueImage,
                         MinOrderAmount = r.Price,
                         EstimatedDeliveryMin = r.Time,
                         CreatedAt = DateTime.UtcNow
@@ -96,6 +98,27 @@ namespace QuickBite.Restaurant.Data
                 }
             }
             context.SaveChanges();
+        }
+
+        private static string GetImageId(string name, string cuisine)
+        {
+            // A collection of high-quality, authentic food/restaurant IDs from Unsplash
+            var pizzaImages = new[] { "1513104890138-7c749659a591", "1574071318508-1cdbad80ad38", "1604382354936-07c5d9983bd3" };
+            var chineseImages = new[] { "1585032226651-759b368d7246", "1512058560541-628f32e927c3", "1552611052-33e04de081de" };
+            var cafeImages = new[] { "1554118811-1e0d58224f24", "1495474472287-4d71bcdd2085", "1507133750040-4a8f57004571" };
+            var indianImages = new[] { "1589301760014-d929f3979dbc", "1601050690597-df0568f70950", "1567306226416-28f0efdc88ce" };
+            var sweetsImages = new[] { "1589113103503-49ef83d89e7c", "1591206369811-4eeb2f03bc95", "1605197548411-5020301bd3e8" };
+            var beverageImages = new[] { "1544145945-f904253d0c7b", "1536935338218-8412ef389d89", "1543157145-f78c636d023d" };
+
+            var seed = Math.Abs(name.GetHashCode());
+            
+            if (cuisine.Contains("Pizza", StringComparison.OrdinalIgnoreCase)) return pizzaImages[seed % pizzaImages.Length];
+            if (cuisine.Contains("Chinese", StringComparison.OrdinalIgnoreCase)) return chineseImages[seed % chineseImages.Length];
+            if (cuisine.Contains("Cafe", StringComparison.OrdinalIgnoreCase) || cuisine.Contains("Beverages")) return cafeImages[seed % cafeImages.Length];
+            if (cuisine.Contains("Sweets", StringComparison.OrdinalIgnoreCase) || cuisine.Contains("Desserts")) return sweetsImages[seed % sweetsImages.Length];
+            if (cuisine.Contains("Beverages", StringComparison.OrdinalIgnoreCase)) return beverageImages[seed % beverageImages.Length];
+            
+            return indianImages[seed % indianImages.Length];
         }
 
         private static Guid GenerateGuid(string name)
