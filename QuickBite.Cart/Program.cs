@@ -99,15 +99,27 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    var context = services.GetRequiredService<CartDbContext>();
+    for (int i = 0; i < 15; i++)
     {
-        var context = services.GetRequiredService<CartDbContext>();
-        context.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
+        try
+        {
+            logger.LogInformation($"Attempting to migrate database (attempt {i + 1})...");
+            context.Database.Migrate();
+            logger.LogInformation("Database migration completed successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            if (i == 14)
+            {
+                logger.LogError(ex, "Database migration failed after maximum retries.");
+                throw;
+            }
+            logger.LogWarning($"Database migration failed: {ex.Message}. Retrying in 3 seconds...");
+            System.Threading.Thread.Sleep(3000);
+        }
     }
 }
 

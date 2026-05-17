@@ -161,9 +161,27 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-    try {
-        dbContext.Database.Migrate();
-    } catch { }
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    for (int i = 0; i < 15; i++)
+    {
+        try
+        {
+            logger.LogInformation($"Attempting to migrate database (attempt {i + 1})...");
+            dbContext.Database.Migrate();
+            logger.LogInformation("Database migration completed successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            if (i == 14)
+            {
+                logger.LogError(ex, "Database migration failed after maximum retries.");
+                throw;
+            }
+            logger.LogWarning($"Database migration failed: {ex.Message}. Retrying in 3 seconds...");
+            System.Threading.Thread.Sleep(3000);
+        }
+    }
 }
 
 app.Run();

@@ -111,11 +111,31 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    var context = services.GetRequiredService<DeliveryDbContext>();
+    for (int i = 0; i < 15; i++)
+    {
+        try
+        {
+            logger.LogInformation($"Attempting to migrate database (attempt {i + 1})...");
+            context.Database.Migrate();
+            logger.LogInformation("Database migration completed successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            if (i == 14)
+            {
+                logger.LogError(ex, "Database migration failed after maximum retries.");
+                throw;
+            }
+            logger.LogWarning($"Database migration failed: {ex.Message}. Retrying in 3 seconds...");
+            System.Threading.Thread.Sleep(3000);
+        }
+    }
+
     try
     {
-        var context = services.GetRequiredService<DeliveryDbContext>();
-        context.Database.Migrate();
-
         if (!context.DeliveryAgents.Any())
         {
             context.DeliveryAgents.Add(new QuickBite.Delivery.Entities.DeliveryAgent 
@@ -137,8 +157,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred during migration.");
+        logger.LogError(ex, "An error occurred during delivery agent seeding.");
     }
 }
 

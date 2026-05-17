@@ -8,7 +8,19 @@ namespace QuickBite.Menu.Data
     {
         public static void Seed(MenuDbContext context)
         {
-            context.Database.Migrate();
+            for (int i = 0; i < 15; i++)
+            {
+                try
+                {
+                    context.Database.Migrate();
+                    break;
+                }
+                catch (Exception)
+                {
+                    if (i == 14) throw;
+                    System.Threading.Thread.Sleep(3000);
+                }
+            }
 
             var restaurantNames = new List<string>
             {
